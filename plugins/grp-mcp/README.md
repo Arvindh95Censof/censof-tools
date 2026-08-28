@@ -10,7 +10,11 @@ This plugin carries its own Python runtime. You do not need Python installed.
 
 ## Setup
 
-Set one environment variable before starting Claude Code:
+**If you created your config with `GRP-MCP-Setup.exe`, there is nothing to set.**
+The server looks in `%LOCALAPPDATA%\grp-mcp\` — the same place the setup
+tool writes — so it finds `connections.json` and `kb_server.json` on its own.
+
+Only if your config lives somewhere else, point at it explicitly:
 
 ```
 GRP_MCP_CONNECTIONS = C:\path\to\connections.json
