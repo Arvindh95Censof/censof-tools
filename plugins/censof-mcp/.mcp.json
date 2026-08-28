@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "censof-mcp": {
+      "type": "http",
+      "url": "https://cen-kb.my/mcp",
+      "headers": {
+        "Authorization": "Bearer ${CENSOF_MCP_TOKEN}"
+      }
+    }
+  }
+}

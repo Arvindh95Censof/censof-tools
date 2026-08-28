@@ -1,0 +1,10 @@
+{
+  "name": "grp-mcp",
+  "description": "Drive an Acumatica ERP instance from Claude: read, write, run processes and diagnose failures across the five APIs Acumatica actually has. Talks to your own instance directly — nothing is proxied, and credentials never leave your machine. Writes are off per profile until you enable them, and a clean 'ok' is never trusted: writes are read back and anything unconfirmed is reported as unverified. Bundles its own Python runtime. Needs GRP_MCP_CONNECTIONS pointing at your connections.json.",
+  "version": "0.81.0-rc9",
+  "author": {
+    "name": "Censof OPEX",
+    "email": "arvindh@censof.com"
+  },
+  "keywords": ["acumatica", "erp", "grp", "odata", "soap"]
+}

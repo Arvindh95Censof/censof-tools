@@ -1,0 +1,23 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "censof-tools",
+  "description": "Censof internal Claude plugins — the GRP knowledge base connector and the tools built on it.",
+  "owner": {
+    "name": "Censof OPEX",
+    "url": "https://github.com/Arvindh95Censof"
+  },
+  "plugins": [
+    {
+      "name": "censof-mcp",
+      "description": "Search the GRP knowledge base — 101k closed RFS tickets, Acumatica documentation, and the GRP manuals — and diagnose a support ticket end to end with the rfs-analyze skill.",
+      "source": "./plugins/censof-mcp",
+      "category": "productivity"
+    },
+    {
+      "name": "grp-mcp",
+      "description": "Drive an Acumatica ERP instance from Claude — read, write, run processes and diagnose failures across all five of Acumatica's APIs. Connects straight to your own instance; credentials never leave your machine. Bundles its own Python runtime.",
+      "source": "./plugins/grp-mcp",
+      "category": "productivity"
+    }
+  ]
+}

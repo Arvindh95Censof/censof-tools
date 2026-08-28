@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "grp-mcp": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/server/grp-mcp.exe",
+      "env": {
+        "GRP_MCP_CONNECTIONS": "${GRP_MCP_CONNECTIONS}",
+        "GRP_MCP_KB_SERVER": "${GRP_MCP_KB_SERVER:-}",
+        "GRP_MCP_CORE_ONLY": "${GRP_MCP_CORE_ONLY:-true}",
+        "GRP_MCP_ALLOW_ADMIN": "${GRP_MCP_ALLOW_ADMIN:-false}"
+      }
+    }
+  }
+}
