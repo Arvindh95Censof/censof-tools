@@ -1,7 +1,7 @@
 {
   "name": "grp-mcp",
-  "description": "Drive an Acumatica ERP instance from Claude: read, write, run processes and diagnose failures across the five APIs Acumatica actually has. Talks to your own instance directly — nothing is proxied, and credentials never leave your machine. Writes are off per profile until you enable them, and a clean 'ok' is never trusted: writes are read back and anything unconfirmed is reported as unverified. Bundles its own Python runtime. Finds your connections.json automatically if GRP-MCP-Setup.exe created it; otherwise set GRP_MCP_CONNECTIONS to its path.",
-  "version": "0.81.0-rc10",
+  "description": "Drive an Acumatica ERP instance from Claude: read, write, run processes and diagnose failures across the five APIs Acumatica actually has. Talks to your own instance directly - nothing is proxied, and credentials never leave your machine. Writes are off per profile until you enable them, and a clean 'ok' is never trusted: writes are read back and anything unconfirmed is reported as unverified. Bundles its own Python runtime. Run its grp-mcp.exe with --setup once to create your connections file; the server then finds it with no environment variable set.",
+  "version": "0.81.0-rc11",
   "author": {
     "name": "Censof OPEX",
     "email": "arvindh@censof.com"
