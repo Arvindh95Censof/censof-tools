@@ -1,0 +1,20 @@
+{
+  "default": "staging",
+  "instances": {
+    "staging": {
+      "base_url": "https://acumatica.example.com/MyCompany",
+      "client_id": "A1B2C3D4-0000-0000-0000-000000000000@MyCompany",
+      "client_secret": "REPLACE-WITH-YOUR-SHARED-SECRET",
+      "username": "integration.user",
+      "password": "REPLACE-WITH-THE-PASSWORD",
+      "tenant": "MyCompany 270326",
+      "branch": "",
+      "endpoint_name": "Default",
+      "endpoint_version": "24.200.001",
+      "risk": "dev",
+      "allow_write": false,
+      "allow_delete": false,
+      "allow_publish": false
+    }
+  }
+}

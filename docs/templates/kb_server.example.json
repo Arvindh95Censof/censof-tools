@@ -1,0 +1,7 @@
+{
+  "url": "https://cen-kb.my/mcp",
+  "tool": "search_docs",
+  "headers": {
+    "Authorization": "Bearer ${KB_TOKEN}"
+  }
+}
