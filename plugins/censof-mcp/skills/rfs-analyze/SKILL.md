@@ -14,16 +14,29 @@ trigger: /rfs-analyze
 
 # /rfs-analyze
 
-**Version 2.8 — 2026-09-03.** Check this line before reporting a problem: if it is older
-than the one the OPEX team is shipping, you are on a stale copy. Ask for
-`rfs-analyze-skill.zip` again, remove the old skill first, then add the new one.
+**Version 2.8.1 — 2026-09-03.** Check this line before reporting a problem: if it is older
+than the one the OPEX team is shipping, you are on a stale copy. It ships inside the
+**censof-mcp plugin** — nothing to unzip and no old copy to remove:
+
+```
+claude plugin marketplace update censof-tools
+claude plugin update censof-mcp@censof-tools
+```
+
+Then restart Claude Code. Both lines, in that order: the first fetches, the second installs.
+The Update button in the app does not work — a known Claude Code bug, not a fault here.
 
 > **State the version out loud, every time, at the top of every answer.** Not because the
 > reader asked — because a silent version number is a version number nobody checks. Open
-> with one line: *"Running rfs-analyze v2.8."* A stale copy is only caught if it is said,
+> with one line: *"Running rfs-analyze v2.8.1."* A stale copy is only caught if it is said,
 > not left to be noticed.
 
-*2.8 — seven changes, all from running v2.7 against live OPEN tickets on 2026-09-02.
+*2.8.1 — the staleness note told you to ask for `rfs-analyze-skill.zip` and swap the
+skill by hand. That route died when this moved into the censof-mcp plugin: there is no zip,
+and removing the old copy first would remove the plugin. It now gives the two commands that
+actually work. Found because the line survived the move unread — the instruction for what to
+do about a stale copy was itself stale.
+2.8 — seven changes, all from running v2.7 against live OPEN tickets on 2026-09-02.
 (1) The answer is now five plain-language sections and STOPS; the technical hand-over is
 offered and written only on request. v2.7 wrote every answer twice and the technical half
 buried the diagnosis. (2) Plain no longer means stripped: screen IDs and record numbers now

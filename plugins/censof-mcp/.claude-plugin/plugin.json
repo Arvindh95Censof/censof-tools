@@ -1,7 +1,7 @@
 {
   "name": "censof-mcp",
   "description": "Read-only search over the GRP knowledge base: 101,530 closed RFS support tickets, Acumatica documentation, and the GRP manuals. Bundles the rfs-analyze skill, which diagnoses one ticket end to end - reads its attachments, checks whether a live ticket is a re-key of a closed one, finds precedent in the closed-ticket history, cross-checks the documentation, and answers in plain language with the technical detail on request. Needs CENSOF_MCP_TOKEN set to your personal grpkb_ token.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": {
     "name": "Censof OPEX",
     "email": "arvindh@censof.com"
