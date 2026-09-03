@@ -5,7 +5,7 @@ description: >-
   and precedent tickets in the closed-ticket history, cross-check the GRP/Acumatica documentation,
   then give the likely cause and a step-by-step fix, labelled proven, proposed, or a proven
   workaround over a root cause that was never fixed. Answers in plain
-  language first, technical detail second. Use whenever an RFS ticket number appears in any of its
+  language, with the technical detail supplied on request. Use whenever an RFS ticket number appears in any of its
   forms -- RFS-2026-353578155, a bare 9-digit live id like 260853801, or a legacy id like
   26080381P -- or when asked to triage, diagnose, find precedent for, or check whether something
   is a duplicate of an existing GRP or Acumatica support issue.
@@ -14,16 +14,34 @@ trigger: /rfs-analyze
 
 # /rfs-analyze
 
-**Version 2.7 — 2026-08-27.** Check this line before reporting a problem: if it is older
+**Version 2.8 — 2026-09-03.** Check this line before reporting a problem: if it is older
 than the one the OPEX team is shipping, you are on a stale copy. Ask for
 `rfs-analyze-skill.zip` again, remove the old skill first, then add the new one.
 
 > **State the version out loud, every time, at the top of every answer.** Not because the
 > reader asked — because a silent version number is a version number nobody checks. Open
-> with one line: *"Running rfs-analyze v2.7."* A stale copy is only caught if it is said,
+> with one line: *"Running rfs-analyze v2.8."* A stale copy is only caught if it is said,
 > not left to be noticed.
 
-*2.7 — six additions, all found by running v2.6 against real tickets, not by
+*2.8 — seven changes, all from running v2.7 against live OPEN tickets on 2026-09-02.
+(1) The answer is now five plain-language sections and STOPS; the technical hand-over is
+offered and written only on request. v2.7 wrote every answer twice and the technical half
+buried the diagnosis. (2) Plain no longer means stripped: screen IDs and record numbers now
+belong in the plain answer, under the act test, because a reader told to open the Loan
+Register was never told where it is — paired with a hard rule that an identifier not confirmed
+from a tool result in this run is never written, after three of the first three written from
+familiarity turned out wrong or unconfirmable. (3) Step 1b: check whether a live ticket is a
+re-key of a closed one, before precedent search. Every live ticket examined had a legacy twin;
+one was open 54 days after the fix for its twin shipped. (4) SLA, assignment and age are read
+and reported — they were returned by every live fetch and used by nothing. (5) A live ticket
+has no thread, said plainly, because steps 2 and 3 then carry the entire diagnosis rather than
+supplementing it. (6) Two new decisions: FIX DEPLOYED, VERIFICATION OUTSTANDING (the true state
+of three of five live tickets) and REFER TO THE EXTERNAL SYSTEM OWNER (for I-class faults; a
+run wrote this decision itself because the vocabulary did not exist). (7) A tight-looking
+cluster on a generic error string is now treated as several causes until each thread proves
+otherwise — five hits sharing one error string had three root causes, and every confidence
+signal said "strong cluster".
+2.7 — six additions, all found by running v2.6 against real tickets, not by
 inspection: (1) a mandatory reverification pass (step 6) — v2.6 forces good EVIDENCE
 gathering but nothing forces the final write-up to actually match that evidence; two
 claims in one session looked fabricated on review and were not, but only a re-check proved
@@ -58,6 +76,7 @@ Take one RFS ticket through six steps, in order:
 | | Step | Produces |
 | --- | --- | --- |
 | 1 | Read the ticket **and its attachments** | what was actually reported |
+| 1b | **Live tickets only** — is this a re-key of a closed one? | the legacy twin, and its whole history |
 | 2 | Find precedent | duplicate verdict + what happened last time |
 | 3 | Read the docs, then **cross-analyse** against precedent | candidate causes, side by side |
 | 4 | Likely cause | what to check, and where |
@@ -70,37 +89,83 @@ the point of the whole skill.
 
 **Work in tables.** Prose hides gaps; a table with an empty cell shows them.
 
-## Write it twice: plain first, technical second
+## The answer: five plain sections, technical detail on request
 
-Two different people read this. A coordinator needs to know what went wrong and what happens
-next. An engineer needs the table names and the script. Writing for only one of them fails
-the other.
+**Write the whole answer in plain language, and stop.** The technical hand-over — tables,
+field names, SQL, DAC and extension names — is NOT written unless the reader asks for it.
 
-So steps 4 and 5 each have **two parts, in this order**:
+One reader gets this first: a Support Engineer with the system open. They need to understand
+the problem and be able to act on it. They do not need the material required to *write* the
+fix until they have decided to.
 
-| | Section | Who it is for | Rule |
-| --- | --- | --- | --- |
-| a | **In plain terms** | anyone — coordinator, manager, the client | No codes, no table names, no jargon. Short. |
-| b | **Technical detail** | whoever applies the fix | Everything: screens, tables, fields, scripts |
+| # | Section | Answers |
+| --- | --- | --- |
+| 1 | **What was reported** | what the user sees, in their words — plus how long it has been open |
+| 2 | **Has this happened before** | named precedent, or plainly no |
+| 3 | **What is wrong** | the cause you landed on |
+| 4 | **What to do** | numbered actions, in order |
+| 5 | **How sure we are** | and what would settle it |
 
-**The plain section is not a summary of the technical one — it is written first and stands
-alone.** Someone who reads only part (a) should understand what broke and what happens next.
+Close with one line, always:
 
-Rules for part (a):
+> *Want the technical detail — the tables, the script, the screen-by-screen? Ask and I'll lay
+> it out.*
 
-* **No screen codes, table names, extension names, or SQL.** Not `LMLoanMaster` — say
-  *"the loan record"*. Not `AP.50.52.00` — say *"the payment release step"*.
+**Then stop.** Produce the technical hand-over only when asked. When you do, lay it out as
+the six steps, numbered 1–6, so the reader can trace any claim back to the work — see
+"Technical hand-over" below.
+
+### Plain does NOT mean stripped of identifiers
+
+This is the change from 2.7, which banned screen codes from the plain half outright. That
+made answers readable but not directive: an engineer told to open the Loan Register is not
+told *where* it is, and has to go and find out.
+
+**Write `Name (CODE)` on first mention, then the name alone:** *"open Loan Register
+(LM501000) and find loan L26000144"*.
+
+**The act test — which identifiers earn their place.** Include what the reader must **type,
+click, open or quote** to carry out section 4. Exclude what is only needed to *write* the fix.
+
+| Include | Leave for the technical detail |
+| --- | --- |
+| screen IDs, because they must open them | table and column names |
+| record numbers — loan, batch, document, journal | DAC and extension names |
+| refernos of tickets you cite | SQL, and any script |
+| CP / release-package versions | field-level internals |
+
+Sections 2, 3 and 5 stay prose. The identifiers belong in 1 and 4, where the reader acts.
+
+### NEVER write an identifier you have not confirmed in this run
+
+Not from memory, not from a previous ticket, not from product familiarity. Confirmed means
+**it came back in a tool result during this run** — a `screen_codes` match, a docs citation
+path, a field in the ticket.
+
+Measured when identifiers were first added to the plain half: of the first three screen IDs
+written from familiarity, **one was the wrong screen, one had the right ID under the wrong
+name, and one could not be confirmed at all.** A remembered ID and a verified one are
+indistinguishable to the reader — which is exactly why the unverified one is dangerous. The
+reader will type it in.
+
+If you cannot confirm it, **write the name alone or leave it out**. A missing code costs the
+reader a search. A wrong one sends them to the wrong screen and makes everything around it
+suspect.
+
+**Query the undotted form.** The corpus stores `AP505200`, not `AP.50.52.00`, and only the
+undotted query sets `exact_code_match`. Search undotted; write it in whichever form the
+client's own documentation uses.
+
+### Still plain, still short
+
 * **Say what the USER sees**, not what the system does internally: *"the loan still shows
   Ready even though the money went out"*.
-* **Three to five sentences.** If it runs longer, it has turned into part (b).
+* **Three to five sentences per section.** Longer means the technical half has leaked in.
 * **Plain words for how sure we are**: *"this has happened before and we know the fix"* /
   *"we have not seen this exact problem before"*.
 * **No hedging a non-technical reader cannot act on.** "Likely a write-back failure in the
   extension" means nothing to them. *"The payment went out but the loan was never updated to
   match"* does.
-
-In part (b), spell out a code the FIRST time it appears — `AP.50.52.00` (the screen that
-releases payments) — then use it freely.
 
 ## Usage
 
@@ -210,6 +275,34 @@ attachment tools. Every ticket carries attachment metadata regardless.
 Read the description, and for a legacy ticket the `thread` too. Note module/screen codes and
 any error text — those are the strongest query material. If found in neither system, stop.
 
+#### A LIVE ticket carries almost no diagnostic content. Expect that.
+
+A closed ticket has a thread — the conversation, the diagnosis, the fix. **A live one usually
+has none of it.** Measured across the live tickets checked on 2026-09-02: `comments[]`
+contained exactly one entry, an automated reply saying no similar issues were found, carrying
+no information. No action notes, no reassignment history, and `assignedAgent` null on two of
+three.
+
+So on a live ticket the ticket **is the symptom statement and an attachment list, and nothing
+more**. Steps 2 and 3 do not supplement your diagnosis — they *are* it. Budget accordingly,
+and do not read the thin ticket as "nothing much wrong here".
+
+#### Read the SLA and assignment fields — they are findings
+
+`fetch_live_ticket` returns `slaStatus`, `slaDueDate`, `breachProbability`, `riskLevel`,
+`createdAt`, `updatedAt`, `assignedAgentId`, `assignedDeveloperId` and `escalatedToPic`.
+Until 2.8 the skill used none of them.
+
+**Report three things in section 1 of the answer: how long it has been open, whether it is
+assigned, and whether the SLA is breached.** One clause, from fields already in the response
+you fetched.
+
+This is not padding. Observed live: a ticket breached and unassigned for eight days; another
+open 54 days with a breached SLA *after the fix for its own duplicate had already shipped*.
+Those are process failures sitting on top of the technical one, and on such a ticket the
+process failure is usually the **more** actionable finding. A reader needs to know a ticket
+has been sitting with nobody's name on it.
+
 ### Attachments are MANDATORY, not a judgement call
 
 **Every ticket, every time. `list_ticket_attachments` is not optional and never has been
@@ -316,6 +409,40 @@ returns both ends with the elided middle marked.
 cannot be read, and say so. That is different from an empty result — report it as "this file
 type cannot be opened", never as "the attachment had nothing in it".
 
+### 1b — Is this live ticket a RE-KEY of one already closed? (live tickets only)
+
+**Do this before precedent search, and only on a live ticket.** It is one call and it changes
+the whole answer when it hits.
+
+```
+search_similar_tickets(query=<the live ticket's description, VERBATIM -- first two
+                              sentences if long>, k=5)
+```
+
+Precedent search asks *"has something like this happened before"*. This asks a different
+question: **"is this literally the same ticket, re-entered into the new system."** Only the
+second one catches a re-key, and re-keys are common — on 2026-09-02 every live ticket examined
+had a legacy twin.
+
+| Live ticket | Legacy twin | How it was recognised |
+| --- | --- | --- |
+| `RFS-2026-867955064` | `26070343P` | description identical word for word |
+| `RFS-2026-353578155` | `26080381P` | same loan `L26000140`, same symptom |
+| `RFS-2026-405640573` | `26080305P` | same adjustment and PO numbers, opened the day after its twin closed |
+
+**A near-identical hit is not precedent — it is the SAME ticket in the old system.** When that
+happens:
+
+* **Read the legacy twin's thread first.** It holds the entire history: the diagnosis, the
+  fix, and whether one already shipped. The live ticket holds none of that.
+* **Treat the live ticket as a duplicate** unless its own content diverges from the twin.
+* **Check whether the fix already shipped** — if it did, you are almost certainly looking at
+  *fix deployed, verification outstanding* (step 5), not a new defect.
+
+`RFS-2026-867955064` was still open with a breached SLA **54 days after the correction package
+for its legacy twin reached production**. Diagnosing it as a new defect would have sent a
+developer after a solved problem.
+
 ### 2 — Find precedent, and decide whether this is a DUPLICATE
 
 ```
@@ -409,6 +536,31 @@ works in both directions.
   — including "this keeps happening and was never properly fixed".
 * **A precedent's attachments are part of the precedent** — see 2b. Do not judge a past
   ticket from its text alone any more than you would the current one.
+
+### A tight-looking cluster on a GENERIC symptom is the dangerous case
+
+`confidence: high`, five tightly-scored hits and one shared error string do **not** mean one
+defect. Measured on `23100721P`: five precedents all carrying *"Batch is out of balance"*, and
+**three different root causes** behind them — duplicate paycode rows in one, wrong amounts in
+another, a loan-balance patch in the third. Every signal said "strong cluster".
+
+`rare_terms` cannot catch this. It flags an *absent* entity; it says nothing about a symptom
+string that is common precisely because many causes produce it.
+
+**So before clustering, ask what the query's distinctive content actually is:**
+
+| The query turns on | Then |
+| --- | --- |
+| a specific entity, screen or identifier | cluster as normal — the shared subject is real |
+| an **error string**, or a generic phrase like *"report does not appear"*, *"cannot save"* | **do not cluster.** Treat every hit as a DIFFERENT cause until its own thread proves otherwise |
+
+In the generic case, read the threads before deciding anything is the same defect, and say in
+the answer that the symptom is generic — *"five tickets share this error message; they do not
+share a cause"*. Carrying one hit's fix to the current ticket because the error text matched
+is how the wrong fix gets proposed with high confidence.
+
+Related: if the defining term has `doc_count` under ~10, say **"near-unique in corpus"** and
+put the effort into the same-client pass and the docs instead.
 
 **State a duplicate verdict explicitly.** If a past ticket is the same defect, say
 *"this is a duplicate of <referno>"* and carry its fix forward. That verdict is usually the
@@ -537,7 +689,7 @@ Rules for filling it:
 
 ### 4 — Likely cause, and what to check in the system
 
-#### 4a — In plain terms
+#### Section 3 of the answer — what is wrong, in plain terms
 
 Three to five sentences, no codes, no table names. Cover:
 
@@ -550,7 +702,10 @@ Three to five sentences, no codes, no table names. Cover:
 > The payment itself is fine; only the loan's own record is out of step. We have seen this
 > same problem several times before, including on this client six days ago."
 
-#### 4b — Technical detail
+#### The technical hand-over for step 4 — ON REQUEST ONLY
+
+**Do not write this unless the reader asks.** The plain sections above are the answer; this is
+what you produce when they take up the offer.
 
 State the cause you land on, referencing the row number from 3b.
 
@@ -583,7 +738,7 @@ like a fact.
 
 ### 5 — The fix, step by step
 
-#### 5a — In plain terms
+#### Section 4 of the answer — what to do, in plain terms
 
 Two or three sentences: **what will be done, and whether it is a known fix or a best effort.**
 No SQL, no table names.
@@ -597,7 +752,11 @@ No SQL, no table names.
 > what the past tickets and the manuals show, the most likely correction is X — but it has
 > not been done before, so it should be tried on a test system first."
 
-#### 5b — The technical steps
+#### The technical hand-over for step 5 — ON REQUEST ONLY
+
+**Do not write this unless the reader asks.** But the *label* below belongs in the plain
+answer too — whether a fix is proven or a guess is not a technical detail, it is the single
+most important thing the reader needs.
 
 **Always give one.** But say plainly which kind it is — this is the difference between a fix
 someone can apply and a guess someone will trust by mistake.
@@ -651,9 +810,26 @@ The last line names what the human should DO — not what you found:
 * **escalate** — recurring defect, or the fix touches production data
 * **raise a product bug** — recurrence with no root cause on record, OR a
   **PROVEN WORKAROUND / ROOT CAUSE NOT FIXED** situation. Say how many times and over what
-  period; that count is the argument. This decision and "verify and close" are not
+  period; that count is the argument — and **enumerate it referno by referno, every one
+  fetched in THIS run.** A count carried from memory, an earlier session or a summary field
+  does not qualify: a figure of "4 occurrences, 2021–2026" re-checked ticket by ticket turned
+  out to be 10 tickets across 3 clients from Feb 2022, wrong in both the count and the start
+  year. It is the one number that carries the whole argument to the developers. This decision and "verify and close" are not
   exclusive — apply the workaround to close THIS ticket, and separately raise the bug so the
   next occurrence isn't a surprise.
+* **fix deployed, verification outstanding** — the correction already shipped and nobody
+  confirmed it. **Name the CP or script, its deployment date, and the one specific thing to
+  check.** This was the true state of three of five live tickets examined on 2026-09-02: a fix
+  in production, the ticket still open, the SLA breached, the client never told. It is not
+  "close as duplicate" — the action needed is a verification, not a merge — and it is not
+  "verify and close" either, because that assumes you are the one who fixed it.
+* **refer to the external system owner** — the fault is not in GRP. Use this for `I`-class
+  fixes (`I03 — Integration, Incorrect Data From External System` and its family), where every
+  recorded closure was "the other system resent the data" and nothing on our side was ever
+  wrong. Say who owns the sending system and what they need to change. Also say whether GRP
+  **should** have rejected the bad input — eight such tickets from one client in ten months,
+  all closed by asking a third party to resend, none with a validation added on the receiving
+  side, is itself a product-bug argument worth making separately.
 
 ---
 
@@ -721,22 +897,28 @@ Not style. Each of these has produced a wrong answer in practice.
 - [ ] Any **conflict** between precedent and docs called out, not smoothed over
 - [ ] Confidence given **per row**
 
-**Step 4 — cause**
-- [ ] **4a written FIRST** — plain terms, no codes, no table names, 3–5 sentences
-- [ ] 4a says what the USER sees, not what the system does internally
-- [ ] Cause stated in 4b, referencing its row number
-- [ ] Checks are concrete — screen, field, expected value, what wrong looks like
-- [ ] Every code spelled out on first use in 4b
-
-**Step 5 — fix**
-- [ ] **5a written FIRST** — plain terms, no SQL, says known fix or best effort
-- [ ] Labelled **PROVEN FIX**, **PROPOSED FIX — not recorded anywhere**, or
-      **PROVEN WORKAROUND / ROOT CAUSE NOT FIXED**
+**The answer — five plain sections**
+- [ ] All five written, in order: reported / seen before / what is wrong / what to do / how sure
+- [ ] Says what the USER sees, not what the system does internally
+- [ ] **Every screen ID and record number was confirmed from a tool result in THIS run** —
+      nothing written from memory or product familiarity
+- [ ] Identifiers pass the act test — present in sections 1 and 4 because the reader must
+      type, click, open or quote them; table names, DAC names and SQL held back
+- [ ] For a live ticket: how long open, whether assigned, whether the SLA is breached
+- [ ] The fix is labelled **PROVEN FIX**, **PROPOSED FIX — not recorded anywhere**, or
+      **PROVEN WORKAROUND / ROOT CAUSE NOT FIXED** — in the plain answer, not held back
 - [ ] A PROPOSED fix names the evidence it was worked out from
 - [ ] A PROVEN WORKAROUND is paired with "raise a product bug", not left as "verify and close"
       alone
-- [ ] Steps numbered, one action each, in the order they must happen
-- [ ] Closes with the decision: verify / close as duplicate / escalate / raise a product bug
+- [ ] Actions numbered, one each, in the order they must happen
+- [ ] Closes with the decision: verify / close as duplicate / escalate / raise a product bug /
+      fix deployed, verification outstanding / refer to the external system owner
+- [ ] **Ends with the offer of the technical detail — and then STOPS**
+
+**The technical hand-over — only if it was asked for**
+- [ ] Laid out as the six steps, numbered 1–6, so any claim traces back to the work
+- [ ] Cause references its row number from 3b
+- [ ] Checks are concrete — screen, field, expected value, what wrong looks like
 
 **Step 6 — reverify**
 - [ ] Every quoted excerpt, code name, SQL script, screen ID, and figure traced to a specific
