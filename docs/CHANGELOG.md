@@ -80,6 +80,36 @@ skill.
 
 ## grp-mcp
 
+### Setup tools · 3 Sep 2026
+
+**`Edit-Connections.cmd` now opens the connections file the server actually reads.**
+Claude installs as an MSIX package, so everything it launches — the grp-mcp server
+included — runs inside that package container, where writes to
+`%LOCALAPPDATA%\grp-mcp` are quietly redirected into
+`%LOCALAPPDATA%\Packages\Claude_<id>\LocalCache\Local\grp-mcp`. Double-clicking
+the launcher from Explorer runs *outside* the container, where that same path is a
+different and usually empty folder.
+
+The result looked like a broken tool: the editor opened on nothing and said
+*"No profiles yet"* on a machine with twelve profiles configured and working. The
+worse half was silent — saving a profile from that empty page wrote a **second**
+`connections.json` that the server never reads, so edits appeared to succeed and
+simply had no effect.
+
+The launcher now finds the real file and points `GRP_MCP_CONNECTIONS` at it, which
+also settles `kb_server.json` since that is written beside whichever connections
+file is in use. First run on a packaged Claude creates the file inside the
+container, where the server will look for it. If a config exists in both places it
+says so, without telling you to delete either — on a launcher run from inside the
+container, the "other" path is the same file under a second name.
+
+Also fixed alongside: the fallback that locates `grp-mcp.exe` in the version cache
+sorted by **name**, so `rc9` outranked `rc12` and a machine with more than one
+build cached would launch the oldest. It now sorts by date.
+
+Delivered by `claude plugin marketplace update censof-tools` — no plugin version
+change and no `claude plugin update` needed.
+
 ### 0.81.0-rc12 · 28 Aug 2026
 
 **The knowledge-base settings no longer save into whatever project you have open.**
