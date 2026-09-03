@@ -14,7 +14,7 @@ trigger: /rfs-analyze
 
 # /rfs-analyze
 
-**Version 2.8.3 — 2026-09-03.** Check this line before reporting a problem: if it is older
+**Version 2.8.4 — 2026-09-03.** Check this line before reporting a problem: if it is older
 than the one the OPEX team is shipping, you are on a stale copy. It ships inside the
 **censof-mcp plugin** — nothing to unzip and no old copy to remove:
 
@@ -28,10 +28,19 @@ The Update button in the app does not work — a known Claude Code bug, not a fa
 
 > **State the version out loud, every time, at the top of every answer.** Not because the
 > reader asked — because a silent version number is a version number nobody checks. Open
-> with one line: *"Running rfs-analyze v2.8.3."* A stale copy is only caught if it is said,
+> with one line: *"Running rfs-analyze v2.8.4."* A stale copy is only caught if it is said,
 > not left to be noticed.
 
-*2.8.3 — two fixes from the first real run of the 2.8 format, on a bank-reconciliation
+*2.8.4 — two fixes. (1) The unrelated-attachment warning was written around one named
+file, `Customer_Satisfaction_Survey_v3.docx`, which invited reading it as a rule about that
+filename. A live run on a Sponsor Refund ticket then found the second attachment was a stock
+photograph of a mountain, uploaded by the assigned agent, with a filename that gave nothing
+away. The rule now says what it always meant: an attachment is guilty until its CONTENT
+matches the description, and the filename is evidence of nothing in either direction. (2) The
+corpus counts were written in the present tense with a verification date buried in the lead —
+they are a snapshot, the ticket count only grows, and an exact figure that carries an argument
+must come from a tool result in the current run. Both found by sweeping, not by failure.
+2.8.3 — two fixes from the first real run of the 2.8 format, on a bank-reconciliation
 ticket. (1) The answer was too wordy, and 2.8's own rule caused it: "sections 2, 3 and 5 stay
 prose" forbade tables in exactly the sections that enumerate, while the file's framing three
 hundred lines earlier says *work in tables, prose hides gaps*. Five precedent tickets in a
@@ -320,7 +329,10 @@ run step 3 anyway and answer from documentation alone, saying that is what you d
 
 ## What the corpus actually contains
 
-Verified 2026-08-26 — every index 100% embedded, bge-m3 1024-dim, zero gaps:
+**Counted 2026-08-26** — every index 100% embedded, bge-m3 1024-dim, zero gaps. These are
+a snapshot, not a constant: tickets close and get ingested, so the ticket count only ever
+grows. Quote them as "about", and if an exact figure carries an argument, get it from a tool
+result in this run rather than from this block.
 
 ```
 rfs-tickets         101,530   closed legacy tickets, 2018-01-01+, 'Client Close' only
@@ -405,9 +417,18 @@ acceptable reasons to skip a file are:
 > A/B/C with empty rating boxes. It is boilerplate stapled to tickets indiscriminately, and
 > it is evidence of nothing.
 >
-> Three occurrences makes this **systemic, not a one-off**. Treat any attachment as
-> guilty until it matches the description — especially a generic-sounding filename that
-> could belong to any ticket.
+> Three occurrences makes this **systemic, not a one-off**.
+>
+> **And it is not about that one file.** On `RFS-2026-867955064` — a Sponsor Refund EFT
+> defect — the second attachment was a **959 KB stock photograph of a snow-capped
+> mountain**, uploaded by the assigned support agent eleven days after the ticket was
+> raised. Nothing about the filename (`133912541925801408.jpg`) suggested it either way.
+> The survey docx is the example, not the rule.
+>
+> **The rule is: an attachment is guilty until its CONTENT matches the description.** Not
+> its filename, which tells you nothing in either direction — a generic name can be the
+> real evidence and a specific-looking one can be a holiday snap. This is why listing is
+> free and mandatory but believing is neither.
 >
 > **So reading the attachment is mandatory, but BELIEVING it is not.** Judge the content
 > against the ticket's own description. If they do not match, say so explicitly — *"the
