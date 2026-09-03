@@ -17,7 +17,8 @@ They are independent. Take one, the other, or both.
 **→ [docs/README.md](docs/README.md)** — pick your plugin and follow that track.
 
 The full documentation lives in [`docs/`](docs/): install guides for each plugin,
-the configuration reference, updating, and troubleshooting. It also carries the
+the configuration reference, updating, troubleshooting, and a
+[changelog](docs/CHANGELOG.md) of what changed in each release. It also carries the
 helper tools — `Set-KB-Token.cmd` and `Edit-Connections.cmd`.
 
 Once you have added this marketplace, that folder is also on your own disk at:
@@ -129,6 +130,12 @@ and commit this repo. Editing the copy here gets overwritten on the next sync.
 `docs/` mirrors `packaging/` documentation in the **grp-mcp** repo where the two
 overlap. When you change how the plugin is installed or configured, change it in
 both — the drift that this move was meant to end.
+
+**Every release needs three things, not one:** the version bumped in
+`plugin.json`, an entry at the top of [docs/CHANGELOG.md](docs/CHANGELOG.md)
+written for the reader rather than the maintainer, and the `LATEST (...)`
+sentence at the end of the plugin `description` updated to match. That sentence
+is the only "what changed" anyone sees without leaving the plugin list.
 
 **Never force-push this repo.** A client records the commit it synced, and
 force-pushing strands every client that had synced against it, each needing a

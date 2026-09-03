@@ -25,6 +25,10 @@ has to be restarted to pick it up.
 That is the whole procedure. The rest of this page explains why it is not a
 button, and how to confirm it worked.
 
+**Wondering what you just installed?** [CHANGELOG.md](CHANGELOG.md) lists every
+release and what you will notice about it. The plugin list also shows a one-line
+summary of the latest version in each plugin’s description.
+
 ---
 
 ## The Update button in the app does not work

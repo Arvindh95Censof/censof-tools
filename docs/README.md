@@ -71,6 +71,7 @@ out — but it is why you will see two names for one secret.
 | **[INSTALL-grp-mcp.md](INSTALL-grp-mcp.md)** | Acumatica. The full one. |
 | [CONFIGURE.md](CONFIGURE.md) | Where every file lives, all environment variables, `setx`, the safety switches. Mostly `grp-mcp`. |
 | [UPDATING.md](UPDATING.md) | How to get new versions of either plugin. |
+| [CHANGELOG.md](CHANGELOG.md) | What changed in each release, and what you will notice. |
 | [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Symptom → cause → fix. |
 | `tools\Set-KB-Token.cmd` | Stores your `grpkb_` token under both variable names, without it appearing on a command line. **Either plugin.** |
 | `tools\Edit-Connections.cmd` | Opens the Acumatica config page. Finds the installed binary for you. **`grp-mcp` only.** |
