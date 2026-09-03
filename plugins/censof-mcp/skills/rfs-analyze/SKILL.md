@@ -14,7 +14,7 @@ trigger: /rfs-analyze
 
 # /rfs-analyze
 
-**Version 2.8.2 — 2026-09-03.** Check this line before reporting a problem: if it is older
+**Version 2.8.3 — 2026-09-03.** Check this line before reporting a problem: if it is older
 than the one the OPEX team is shipping, you are on a stale copy. It ships inside the
 **censof-mcp plugin** — nothing to unzip and no old copy to remove:
 
@@ -28,10 +28,19 @@ The Update button in the app does not work — a known Claude Code bug, not a fa
 
 > **State the version out loud, every time, at the top of every answer.** Not because the
 > reader asked — because a silent version number is a version number nobody checks. Open
-> with one line: *"Running rfs-analyze v2.8.2."* A stale copy is only caught if it is said,
+> with one line: *"Running rfs-analyze v2.8.3."* A stale copy is only caught if it is said,
 > not left to be noticed.
 
-*2.8.2 — three fixes from sweeping 2.8.1 for stale content. (1) The opening line still
+*2.8.3 — two fixes from the first real run of the 2.8 format, on a bank-reconciliation
+ticket. (1) The answer was too wordy, and 2.8's own rule caused it: "sections 2, 3 and 5 stay
+prose" forbade tables in exactly the sections that enumerate, while the file's framing three
+hundred lines earlier says *work in tables, prose hides gaps*. Five precedent tickets in a
+run-on paragraph was the result. The rule is reversed: three or more parallel items is a
+table; causes, judgements and ordered actions stay prose. (2) A self-correction reached the
+reader — *"(26040871P — sorry, 25040871P)"*. Step 6 exists to catch that before it ships:
+apply the correction, do not narrate it, because a visible one tells the reader nothing was
+checked and casts doubt on the claims that were right.
+2.8.2 — three fixes from sweeping 2.8.1 for stale content. (1) The opening line still
 said "six steps" while the table under it listed seven — 2.8 added 1b and did not update the
 sentence above it. (2) `--docs-only` is gone from the usage block: it was documented, and
 nothing in 975 lines honoured it, so typing it silently got you the normal run. A flag that
@@ -159,7 +168,31 @@ click, open or quote** to carry out section 4. Exclude what is only needed to *w
 | refernos of tickets you cite | SQL, and any script |
 | CP / release-package versions | field-level internals |
 
-Sections 2, 3 and 5 stay prose. The identifiers belong in 1 and 4, where the reader acts.
+The identifiers belong in 1 and 4, where the reader acts.
+
+### Enumerate in TABLES, argue in prose
+
+This reverses 2.8's "sections 2, 3 and 5 stay prose", which was wrong and produced answers
+nobody wanted to read. The file's own framing says *work in tables — prose hides gaps*, and
+then the answer format forbade them in the sections that need them most. Five precedent
+tickets described in a run-on paragraph is the worst case, and it was the common one.
+
+**If a section contains three or more parallel items, it is a table.**
+
+| Content | Form |
+| --- | --- |
+| precedent tickets — referno, date, what it was, outcome | **table** |
+| the facts of the report — account, statement, amounts, documents | **table** |
+| process state — priority, age, SLA, who it is assigned to | **table** |
+| an occurrence count backing a product-bug argument | **table**, one row per referno |
+| per-claim confidence | **table** — claim, how sure, what it rests on |
+| the CAUSE — why this happened | **prose.** It is an argument, not a list |
+| the ACTIONS — what to do, in order | **numbered list.** Steps carry conditionals; a table breaks the flow |
+| a judgement — an attachment that does not belong, a generic symptom, an honest fix label | **prose.** A table flattens reasoning into assertion |
+
+A recurrence table in section 5 and a precedent table in section 2 hold the same tickets. Do
+not write both — put the enumeration where the argument needs it and reference it from the
+other.
 
 ### NEVER write an identifier you have not confirmed in this run
 
@@ -903,6 +936,12 @@ in this exchange actually produced this?**
 * **Fix what reverification finds before releasing, not after** — verify it for real, rewrite
   the sentence to say only what is supported, or mark it explicitly as inference under step
   4's confidence language. A finding from this step never ships as a footnote for later.
+* **Apply the correction; do not narrate it.** Observed shipping to a reader:
+  *"(26040871P — sorry, 25040871P)"*. Rewrite the referno and move on. A visible
+  self-correction tells the reader the answer was not checked before it was sent, which
+  undermines every unqualified claim beside it — including the correct ones. The exception is
+  a claim you could not settle: that is marked as unconfirmed on purpose, and saying so is
+  the point.
 
 ## Before you answer — check every line
 
@@ -932,6 +971,12 @@ Not style. Each of these has produced a wrong answer in practice.
 **The answer — five plain sections**
 - [ ] All five written, in order: reported / seen before / what is wrong / what to do / how sure
 - [ ] Says what the USER sees, not what the system does internally
+- [ ] **Every section with 3+ parallel items is a TABLE** — precedent, occurrence counts,
+      report facts, process state, per-claim confidence
+- [ ] Cause and judgement calls left as prose; actions left as a numbered list
+- [ ] The same tickets are not enumerated twice, once in section 2 and again in section 5
+- [ ] **No self-correction visible in the text** — a fixed referno reads as if it was always
+      right; only a genuinely unconfirmed claim is flagged as such
 - [ ] **Every screen ID and record number was confirmed from a tool result in THIS run** —
       nothing written from memory or product familiarity
 - [ ] Identifiers pass the act test — present in sections 1 and 4 because the reader must
