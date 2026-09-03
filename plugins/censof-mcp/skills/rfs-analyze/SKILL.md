@@ -14,7 +14,7 @@ trigger: /rfs-analyze
 
 # /rfs-analyze
 
-**Version 2.8.1 — 2026-09-03.** Check this line before reporting a problem: if it is older
+**Version 2.8.2 — 2026-09-03.** Check this line before reporting a problem: if it is older
 than the one the OPEX team is shipping, you are on a stale copy. It ships inside the
 **censof-mcp plugin** — nothing to unzip and no old copy to remove:
 
@@ -28,10 +28,22 @@ The Update button in the app does not work — a known Claude Code bug, not a fa
 
 > **State the version out loud, every time, at the top of every answer.** Not because the
 > reader asked — because a silent version number is a version number nobody checks. Open
-> with one line: *"Running rfs-analyze v2.8.1."* A stale copy is only caught if it is said,
+> with one line: *"Running rfs-analyze v2.8.2."* A stale copy is only caught if it is said,
 > not left to be noticed.
 
-*2.8.1 — the staleness note told you to ask for `rfs-analyze-skill.zip` and swap the
+*2.8.2 — three fixes from sweeping 2.8.1 for stale content. (1) The opening line still
+said "six steps" while the table under it listed seven — 2.8 added 1b and did not update the
+sentence above it. (2) `--docs-only` is gone from the usage block: it was documented, and
+nothing in 975 lines honoured it, so typing it silently got you the normal run. A flag that
+does nothing is worse than no flag, because "the search was skipped" and "the search found
+nothing" are different claims and the reader could not tell which they had. Removed rather
+than implemented — say so plainly if the behaviour is wanted, and it can be built. (3) The
+undotted-query rule now shows the two strings side by side; every worked example is written
+dotted, so the rule was being taught by an example that contradicted it.
+NOT fixed here, because it is not in this file: the server's own `search_similar_tickets`
+description still quotes the 22.9% wrong-product figure that 2.5 corrected to 21.1%. One of
+the two is stale and the regression gate has the answer.
+2.8.1 — the staleness note told you to ask for `rfs-analyze-skill.zip` and swap the
 skill by hand. That route died when this moved into the censof-mcp plugin: there is no zip,
 and removing the old copy first would remove the plugin. It now gives the two commands that
 actually work. Found because the line survived the move unread — the instruction for what to
@@ -84,7 +96,7 @@ split into separate steps; every fix labelled PROVEN or PROPOSED.
 1.2 — attachments mandatory on the ticket and on every precedent presented; bare numeric live
 ticket IDs; per-file relevance verdict; pre-answer checklist.*
 
-Take one RFS ticket through six steps, in order:
+Take one RFS ticket through these steps, in order. 1b runs on live tickets only:
 
 | | Step | Produces |
 | --- | --- | --- |
@@ -166,8 +178,16 @@ reader a search. A wrong one sends them to the wrong screen and makes everything
 suspect.
 
 **Query the undotted form.** The corpus stores `AP505200`, not `AP.50.52.00`, and only the
-undotted query sets `exact_code_match`. Search undotted; write it in whichever form the
-client's own documentation uses.
+undotted query sets `exact_code_match`. Two different strings for one screen:
+
+```
+search_docs(query="AP505200 release payments", k=10)     # finds it, exact_code_match
+search_docs(query="AP.50.52.00 release payments", k=10)  # does not
+```
+
+Search undotted, then write it in whichever form the client's own documentation uses. The
+worked examples further down are written dotted because that is how GRP's own manuals print
+them — that is a display choice, and it is not the string you search with.
 
 ### Still plain, still short
 
@@ -186,7 +206,6 @@ client's own documentation uses.
 /rfs-analyze RFS-2026-353578155     # live ticket, prefixed form
 /rfs-analyze 260853801              # live ticket, BARE numeric form -- equally valid
 /rfs-analyze 18010041P              # historical ticket, already closed
-/rfs-analyze <referno> --docs-only  # skip precedent; docs are NEVER skippable
 ```
 
 **Ticket number tells you which system it is.**
