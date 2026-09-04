@@ -121,6 +121,30 @@ The two Acumatica plugins carry different version numbers on purpose:
 `grp-mcp` **0.81.0-rc12** (its bundled Windows binary is unaffected by the
 version-reporting fix, so it was not rebuilt) and `grp-mcp-mac` **0.81.0-rc13**.
 
+### Docs: macOS, everywhere it was missing · 3 Sep 2026
+
+Adding the `grp-mcp-mac` plugin covered how to install it, and left three holes
+elsewhere. An audit found them by counting, not by reading: `CONFIGURE.md` had 18
+Windows-only references and zero mentions of macOS, and the repo README had six
+and none.
+
+**How a Mac user sets their token was documented nowhere.** `docs/tools/` holds
+only `.cmd` and `.ps1` scripts, and the token step in the censof-mcp guide was
+entirely PowerShell. That blocked the plugin *everyone* installs, not just the
+Acumatica one.
+
+Written out now, including the part that would have cost someone an afternoon:
+on macOS an app launched from **Finder, the Dock or Spotlight never reads
+`~/.zshrc`**. So exporting the token in a shell profile works for `claude` in a
+terminal and does nothing for the desktop app — and it fails as an authorisation
+error on every search while the plugin looks perfectly healthy. Either launch
+from a terminal, or `launchctl setenv` and restart.
+
+`CONFIGURE.md` now gives `~/.grp-mcp/` alongside `%LOCALAPPDATA%\grp-mcp\`
+throughout. `docs/tools/README.md` says outright that everything in it is a
+Windows script and points at the manual equivalents. `INSTALL-grp-mcp.md` opens
+by telling a Mac reader they are in the wrong guide.
+
 ### Setup tools · 3 Sep 2026
 
 **`Edit-Connections.cmd` now opens the connections file the server actually reads.**

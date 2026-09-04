@@ -1,5 +1,11 @@
 # GRP MCP — installation, step by step
 
+> **Windows only.** This plugin bundles `server/grp-mcp.exe`. On macOS or Linux
+> it installs cleanly and then never starts — no error, no Acumatica tools,
+> nothing naming the cause. Use **[`grp-mcp-mac`](INSTALL-grp-mcp-mac.md)**
+> instead, which runs the same server from PyPI. Install one or the other, never
+> both.
+
 From nothing installed to Claude answering `whoami` against your Acumatica
 instance. Allow about fifteen minutes the first time.
 

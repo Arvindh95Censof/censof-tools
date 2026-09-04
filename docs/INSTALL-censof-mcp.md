@@ -123,6 +123,67 @@ plugin, because nothing reads it.
 
 ---
 
+## On macOS or Linux — setting the token by hand
+
+`Set-KB-Token.cmd` is a Windows script. There is no equivalent to double-click,
+so set the two variables yourself. Same rule as on Windows: **both names, one
+value.**
+
+| Variable | Read by |
+|---|---|
+| `CENSOF_MCP_TOKEN` | this plugin |
+| `KB_TOKEN` | `grp-mcp-mac`'s write preflight, if you install it |
+
+Add them to your shell profile — `~/.zshrc` on macOS, `~/.bashrc` on most Linux.
+**Open it in an editor and paste the line in**; do not `echo … >> ~/.zshrc` from
+a prompt, because the token then sits in your shell history as well, which is the
+same objection that rules out `setx` on Windows.
+
+```bash
+export CENSOF_MCP_TOKEN="grpkb_your_token_here"
+export KB_TOKEN="$CENSOF_MCP_TOKEN"
+```
+
+Then open a new terminal and check it took:
+
+```bash
+echo ${CENSOF_MCP_TOKEN:+set, ${#CENSOF_MCP_TOKEN} characters}
+```
+
+That prints the length without printing the token.
+
+### The trap: a profile is not enough for the desktop app
+
+On macOS an application launched from **Finder, the Dock or Spotlight does not
+read `~/.zshrc`**. Shell profiles are read by shells, and the desktop app is not
+started by one. So the export above works perfectly for `claude` in a terminal
+and has no effect at all on the app — which fails the worst possible way: the
+plugin loads, the tools appear, and every search returns an authorisation error.
+
+Two ways round it. Either:
+
+- **Launch Claude Code from a terminal**, so it inherits your environment. The
+  simplest answer, and it needs nothing else; or
+- **Set it for the GUI session too**:
+
+  ```bash
+  launchctl setenv CENSOF_MCP_TOKEN "$CENSOF_MCP_TOKEN"
+  ```
+
+  ```bash
+  launchctl setenv KB_TOKEN "$CENSOF_MCP_TOKEN"
+  ```
+
+  Run these from a terminal that already has the variables. They apply to apps
+  started afterwards, so **restart Claude Code after**. Note this does **not
+  survive a reboot** — re-run them, or add a LaunchAgent if you want it
+  permanent.
+
+If searches fail with an auth error only in the app but work in the terminal,
+this is why.
+
+---
+
 ## Step 5 — Restart and check
 
 **Fully restart Claude Code.** Quit the application; closing a conversation is
@@ -146,7 +207,7 @@ Or try the skill it bundles, on any real ticket number:
 | Symptom | Cause and fix |
 |---|---|
 | No knowledge-base tools appear | Are you in Claude Code, or Claude Desktop? The chat app does not use plugins. Otherwise `claude plugin list` and restart. |
-| Every search fails with an auth error | The token is not reaching the server. Run `tools\Set-KB-Token.cmd`, then **restart**. |
+| Every search fails with an auth error | The token is not reaching the server. Windows: run `tools\Set-KB-Token.cmd`. macOS/Linux: see the section above — and if it works in a terminal but not the app, that is the Finder-does-not-read-`.zshrc` trap. Then **restart**. |
 | `repository not found` | Permission, not a typo. See Step 1. |
 | `claude` not recognized | CLI not installed, or PowerShell not reopened. See Step 2. |
 

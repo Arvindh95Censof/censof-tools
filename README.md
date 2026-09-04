@@ -6,7 +6,8 @@ updates arrive from git — no more emailed files.
 | Plugin | What it does |
 | --- | --- |
 | **`censof-mcp`** | Search the GRP knowledge base — 101,530 closed RFS tickets, the Acumatica documentation and the GRP manuals. Bundles the `rfs-analyze` skill. Read-only. |
-| **`grp-mcp`** | Drive an Acumatica instance — read records, write them, run processes, diagnose failures. Talks to your own instance; credentials never leave your machine. |
+| **`grp-mcp`** | Drive an Acumatica instance — read records, write them, run processes, diagnose failures. Talks to your own instance; credentials never leave your machine. **Windows only** — it bundles a Windows binary. |
+| **`grp-mcp-mac`** | The same Acumatica server for **macOS and Linux**, run from PyPI instead of a bundled binary. Needs `uv`. Install this *or* `grp-mcp`, never both. |
 
 They are independent. Take one, the other, or both.
 
@@ -49,6 +50,14 @@ Use the full `.git` URL — the shorter `owner/repo` form does not reliably
 authenticate to a private repository. Swap in `grp-mcp@censof-tools` for the
 Acumatica plugin; `grp-mcp` needs your Acumatica credentials as well, which
 [docs/INSTALL-grp-mcp.md](docs/INSTALL-grp-mcp.md) walks through.
+
+**On a Mac or Linux?** `grp-mcp` bundles a Windows binary — it will install and
+then never start, with no error saying why. Use `grp-mcp-mac@censof-tools`
+instead and follow
+[docs/INSTALL-grp-mcp-mac.md](docs/INSTALL-grp-mcp-mac.md). `censof-mcp` needs no
+variant; it calls a hosted service and runs anywhere. Note the token tools below
+are Windows scripts — the Mac equivalent is in
+[docs/INSTALL-censof-mcp.md](docs/INSTALL-censof-mcp.md).
 
 Then set your token by double-clicking `docs\tools\Set-KB-Token.cmd`, and restart
 Claude Code.

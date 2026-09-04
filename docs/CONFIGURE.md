@@ -36,8 +36,19 @@ on its own** — there is nothing to point it at.
 %LOCALAPPDATA%\grp-mcp\kb_server.json      which knowledge base to consult
 ```
 
-On a normal machine that expands to
+On a normal Windows machine that expands to
 `C:\Users\<you>\AppData\Local\grp-mcp\`.
+
+**On macOS and Linux** (the `grp-mcp-mac` plugin) there is no `LOCALAPPDATA`, so
+the same two files live in your home directory instead:
+
+```
+~/.grp-mcp/connections.json    your instance profiles and credentials
+~/.grp-mcp/kb_server.json      which knowledge base to consult
+```
+
+Everything below applies to both — read `%LOCALAPPDATA%\grp-mcp\` and
+`~/.grp-mcp/` as the same place under two names.
 
 `%LOCALAPPDATA%` is deliberate. It is per-machine and is **never roamed or
 synced** — which matters because `connections.json` holds your ERP password in
@@ -51,6 +62,7 @@ Downloads or on the Desktop, both of which are routinely OneDrive-synced.
 1. `%GRP_MCP_CONNECTIONS%`, if that variable is set
 2. `connections.json` in the current working directory
 3. `%LOCALAPPDATA%\grp-mcp\connections.json` ← **the normal answer**
+   (macOS/Linux: `~/.grp-mcp/connections.json`)
 4. the source checkout, for developers
 
 `kb_server.json` follows the same idea: `%GRP_MCP_KB_SERVER%`, then beside
@@ -109,7 +121,41 @@ tools\Set-KB-Token.cmd
 Double-click it. (It has to be run interactively — the hidden prompt reads the
 console directly and cannot be piped or scripted.)
 
-### For non-secret values
+### On macOS and Linux
+
+There is no `.cmd` to run. Put the exports in your shell profile — `~/.zshrc` on
+macOS, `~/.bashrc` on most Linux — using an editor rather than `echo … >>`, so
+the value does not also land in your shell history:
+
+```bash
+export CENSOF_MCP_TOKEN="grpkb_your_token_here"
+export KB_TOKEN="$CENSOF_MCP_TOKEN"
+```
+
+**A shell profile does not reach an app launched from Finder, the Dock or
+Spotlight.** Those are not started by a shell, so they never read `~/.zshrc`. The
+variable ends up set for `claude` in a terminal and unset for the desktop app,
+which surfaces as every knowledge-base call failing authorisation while the
+plugin itself looks perfectly healthy. Either launch Claude Code from a terminal,
+or publish the values to the GUI session as well:
+
+```bash
+launchctl setenv CENSOF_MCP_TOKEN "$CENSOF_MCP_TOKEN"
+```
+
+`launchctl setenv` applies to apps started afterwards, so restart Claude Code —
+and note it does **not** survive a reboot.
+
+Paths work the same way:
+`export GRP_MCP_CONNECTIONS="$HOME/shared/connections.json"`.
+
+Check what a shell actually holds, without printing the value:
+
+```bash
+echo ${CENSOF_MCP_TOKEN:+set, ${#CENSOF_MCP_TOKEN} characters}
+```
+
+### For non-secret values (Windows)
 
 Paths are not secrets, so `setx` is fine:
 

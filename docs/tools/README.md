@@ -56,3 +56,16 @@ You only need it to create a `connections.json` on a machine where **nothing is
 installed yet** — preparing a config centrally to hand to someone, for instance.
 Ask whoever maintains these tools for it; drop it beside `Edit-Connections.cmd`
 and the launcher will find it.
+
+---
+
+## Windows only
+
+Everything in this folder is a `.cmd` or `.ps1` script, so none of it runs on
+macOS or Linux. The equivalents there are done by hand, and are written out in
+full:
+
+| Instead of | Do this |
+| --- | --- |
+| `Set-KB-Token.cmd` | [INSTALL-censof-mcp.md](../INSTALL-censof-mcp.md) → *On macOS or Linux — setting the token by hand*. Read it rather than guessing: a shell profile does not reach an app launched from Finder, which fails as an auth error with a healthy-looking plugin. |
+| `Edit-Connections.cmd` | `uvx --from grp-mcp-plugin==0.81.0rc13 grp-mcp-setup` — see [INSTALL-grp-mcp-mac.md](../INSTALL-grp-mcp-mac.md) |
