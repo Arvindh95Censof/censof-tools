@@ -30,6 +30,16 @@ steps, about fifteen minutes.
 
 → **[INSTALL-grp-mcp.md](INSTALL-grp-mcp.md)**
 
+### On a Mac or Linux? — `grp-mcp-mac`
+
+`grp-mcp` bundles a Windows binary, so on macOS it installs and then never
+starts. `grp-mcp-mac` is the same server run from PyPI instead. One extra
+prerequisite, `uv`; everything else is identical.
+
+**Install one or the other, never both.**
+
+→ **[INSTALL-grp-mcp-mac.md](INSTALL-grp-mcp-mac.md)**
+
 ### Both?
 
 Do `censof-mcp` first. It is quick, and it proves your GitHub access and your
@@ -54,7 +64,13 @@ out — but it is why you will see two names for one secret.
 - **Access to the private `censof-tools` GitHub repository.** If you cannot open
   <https://github.com/Arvindh95Censof/censof-tools> in a browser, stop and
   request access — nothing here will work without it.
-- **Windows 10 or 11** for `grp-mcp`. `censof-mcp` runs anywhere Claude Code does.
+- **Windows 10 or 11** for `grp-mcp` — it bundles a Windows binary. On macOS or
+  Linux use **`grp-mcp-mac`** instead, which needs `uv`.
+  `censof-mcp` runs anywhere Claude Code does.
+- **On macOS, install from the CLI.** The app's **Add marketplace** button
+  registers the marketplace and then stops without installing the plugin — the
+  app logs `Found 0 local plugins` while the marketplace sits there cloned.
+  `claude plugin install` writes the file the button skips.
 
 > **Not for Claude Desktop.** These are **plugins**, which serve Claude Code.
 > *Claude Desktop* — the separate chat app — does not use plugins at all; it

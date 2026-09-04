@@ -10,6 +10,12 @@ claude plugin marketplace update censof-tools
 claude plugin update grp-mcp@censof-tools
 ```
 
+On macOS or Linux the Acumatica plugin is named differently:
+
+```powershell
+claude plugin update grp-mcp-mac@censof-tools
+```
+
 For the knowledge-base plugin it is the same shape, with the other name:
 
 ```powershell

@@ -80,6 +80,47 @@ skill.
 
 ## grp-mcp
 
+### grp-mcp-mac · 3 Sep 2026
+
+**A new plugin, for macOS and Linux.** The `grp-mcp` plugin bundles
+`server/grp-mcp.exe`, a Windows binary. On a Mac it installed cleanly and then
+never started — no error, just no Acumatica tools, which is a hard thing to
+diagnose from the outside. Reported by a Mac user who had worked around it by
+running the server by hand from source, four releases behind and off the update
+path entirely.
+
+It could not be fixed inside `grp-mcp`: a plugin's `.mcp.json` has no way to
+choose a different command per operating system, so the Windows binary and a Mac
+executable cannot live behind one plugin. Hence a second one.
+
+`grp-mcp-mac` ships no binary. It runs the same code from PyPI through `uvx`,
+pinned to an exact version so the server cannot change underneath you while the
+plugin version stays the same. One extra prerequisite — `uv`. Everything else is
+identical: same tools, same gates, same write verification.
+
+**Install `grp-mcp` or `grp-mcp-mac`, never both.** They register the same server
+name, so you would get every tool twice with no way to tell which answered.
+
+Also fixed, and the reason this works at all: **`grp-mcp --setup` now opens the
+config page.** The flag was only ever implemented in the Windows build, so
+running the Python package with it silently started an MCP server instead —
+which would have left Mac users with no way to create a `connections.json`.
+
+And a second one found by testing rather than by report: the server looked up its
+own version under one distribution name only, so installed under the new name it
+announced itself as **`0+unknown`** — over the MCP handshake and in `whoami`, i.e.
+the first thing anyone is asked for when reporting a problem. Caught by driving
+the published package over stdio instead of trusting that it worked.
+
+Two macOS notes now in the docs: the **Add marketplace** button in the app
+registers the marketplace and stops without installing (`Found 0 local plugins`),
+so install from the CLI there; and the config file lives at
+`~/.grp-mcp/connections.json`.
+
+The two Acumatica plugins carry different version numbers on purpose:
+`grp-mcp` **0.81.0-rc12** (its bundled Windows binary is unaffected by the
+version-reporting fix, so it was not rebuilt) and `grp-mcp-mac` **0.81.0-rc13**.
+
 ### Setup tools · 3 Sep 2026
 
 **`Edit-Connections.cmd` now opens the connections file the server actually reads.**

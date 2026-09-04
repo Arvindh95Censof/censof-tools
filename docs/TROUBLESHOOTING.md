@@ -204,3 +204,14 @@ variable name it used — check both. It never prints the token itself.
 `kb_status` makes a real search call rather than echoing configuration — a spec
 can be perfectly well-formed and point at a dead host, and both look identical
 in the file.
+
+---
+
+## macOS and Linux
+
+| What you see | What it means |
+| --- | --- |
+| `grp-mcp` installed, but no Acumatica tools and no error | You installed the Windows plugin. It bundles `server/grp-mcp.exe`, which a Mac cannot execute, so the server never starts and nothing reports it. Remove it and install **`grp-mcp-mac`** — see [INSTALL-grp-mcp-mac.md](INSTALL-grp-mcp-mac.md) |
+| **Add marketplace** in the app appears to work, but no plugin is installed | The button registers the marketplace and stops. The app logs `Found 0 local plugins` even though the clone is there, because it never writes `~/.claude/plugins/installed_plugins.json`. Editing `enabledPlugins` in `settings.json` by hand does not fix it either. Install from the CLI: `claude plugin install <name>@censof-tools` |
+| `uvx: command not found` | `grp-mcp-mac` needs `uv`. `brew install uv`, or `curl -LsSf https://astral.sh/uv/install.sh \| sh`, then reopen the terminal |
+| Both `grp-mcp` and `grp-mcp-mac` installed | Every tool appears twice and you cannot tell which answered. Remove one: `claude plugin uninstall grp-mcp@censof-tools` |

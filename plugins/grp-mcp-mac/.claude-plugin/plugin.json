@@ -1,0 +1,18 @@
+{
+  "name": "grp-mcp-mac",
+  "description": "Drive an Acumatica ERP instance from Claude on macOS or Linux: read, write, run processes and diagnose failures across the five APIs Acumatica actually has. Talks to your own instance directly - nothing is proxied, and credentials never leave your machine. Writes are off per profile until you enable them, and a clean 'ok' is never trusted: writes are read back and anything unconfirmed is reported as unverified. Identical to the grp-mcp plugin in every way except how it starts: that one bundles a Windows .exe, this one runs the same code from PyPI through uvx, so it needs uv installed. Install ONE of the two, not both. Run 'uvx --from grp-mcp-plugin==0.81.0rc13 grp-mcp-setup' once to create your connections file; the server then finds it with no environment variable set.",
+  "version": "0.81.0-rc13",
+  "author": {
+    "name": "Censof OPEX",
+    "email": "arvindh@censof.com"
+  },
+  "keywords": [
+    "acumatica",
+    "erp",
+    "grp",
+    "odata",
+    "soap",
+    "macos",
+    "linux"
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "censof-tools",
-  "description": "Censof internal Claude plugins — the GRP knowledge base connector and the tools built on it.",
+  "description": "Censof internal Claude plugins \u2014 the GRP knowledge base connector and the tools built on it.",
   "owner": {
     "name": "Censof OPEX",
     "url": "https://github.com/Arvindh95Censof"
@@ -9,14 +9,20 @@
   "plugins": [
     {
       "name": "censof-mcp",
-      "description": "Search the GRP knowledge base — 101k closed RFS tickets, Acumatica documentation, and the GRP manuals — and diagnose a support ticket end to end with the rfs-analyze skill.",
+      "description": "Search the GRP knowledge base \u2014 101k closed RFS tickets, Acumatica documentation, and the GRP manuals \u2014 and diagnose a support ticket end to end with the rfs-analyze skill.",
       "source": "./plugins/censof-mcp",
       "category": "productivity"
     },
     {
       "name": "grp-mcp",
-      "description": "Drive an Acumatica ERP instance from Claude — read, write, run processes and diagnose failures across all five of Acumatica's APIs. Connects straight to your own instance; credentials never leave your machine. Bundles its own Python runtime.",
+      "description": "Drive an Acumatica ERP instance from Claude \u2014 read, write, run processes and diagnose failures across all five of Acumatica's APIs. Connects straight to your own instance; credentials never leave your machine. Bundles its own Python runtime.",
       "source": "./plugins/grp-mcp",
+      "category": "productivity"
+    },
+    {
+      "name": "grp-mcp-mac",
+      "description": "The Acumatica plugin for macOS and Linux. Same server as grp-mcp, started a different way: grp-mcp bundles a Windows binary that will not run on a Mac, so this one runs the same code from PyPI through uvx. Needs uv. Install one or the other, never both.",
+      "source": "./plugins/grp-mcp-mac",
       "category": "productivity"
     }
   ]
