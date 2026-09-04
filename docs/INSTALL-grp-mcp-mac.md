@@ -62,7 +62,7 @@ The server reads its instances from `connections.json`. Create it with the same
 config page Windows users get:
 
 ```bash
-uvx --from grp-mcp-plugin==0.81.0rc13 grp-mcp-setup
+uvx --from grp-mcp-plugin==0.81.0rc14 grp-mcp-setup
 ```
 
 A browser tab opens on `http://127.0.0.1:8765`. Add your instance, click **Save
@@ -145,7 +145,7 @@ claude plugin update grp-mcp-mac@censof-tools
 Then restart Claude Code.
 
 The version of the server is **pinned in the plugin**, not resolved fresh each
-time — `uvx --from grp-mcp-plugin==0.81.0rc13`. That is deliberate: an unpinned
+time — `uvx --from grp-mcp-plugin==0.81.0rc14`. That is deliberate: an unpinned
 `uvx` would silently change the server underneath you between one launch and the
 next, and a plugin whose behaviour drifts without its version changing is
 untraceable when something breaks. New server versions arrive the same way

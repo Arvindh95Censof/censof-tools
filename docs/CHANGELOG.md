@@ -80,6 +80,15 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc14 · 4 Sep 2026
+
+The Windows binary was rebuilt so it actually carries the location fix below —
+until now the config page wrote to the new place while the shipped binary still
+read the old one. Both plugins are on rc14 now and agree.
+
+**Update both commands, then restart.** If you already had a config, it stays
+exactly where it is and keeps working; nothing is moved for you.
+
 ### Config moved out of AppData · 4 Sep 2026
 
 **A Claude app update deleted a user's saved connections overnight.** Twelve

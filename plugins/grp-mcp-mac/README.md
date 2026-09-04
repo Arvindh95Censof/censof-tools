@@ -11,7 +11,7 @@ rather than a fix inside the other one.
 This plugin ships no binary. It runs the same code from PyPI:
 
 ```
-uvx --from grp-mcp-plugin==0.81.0rc13 grp-mcp
+uvx --from grp-mcp-plugin==0.81.0rc14 grp-mcp
 ```
 
 **Install `grp-mcp` or `grp-mcp-mac`, never both.** They register the same server
@@ -28,7 +28,7 @@ Windows plugin does not need.
 Create your connections file once:
 
 ```
-uvx --from grp-mcp-plugin==0.81.0rc13 grp-mcp-setup
+uvx --from grp-mcp-plugin==0.81.0rc14 grp-mcp-setup
 ```
 
 It opens `http://127.0.0.1:8765` and writes to `~/.grp-mcp/connections.json`,
@@ -39,7 +39,7 @@ Full walkthrough: [docs/INSTALL-grp-mcp-mac.md](../../docs/INSTALL-grp-mcp-mac.m
 
 ## Why the version is pinned
 
-`--from grp-mcp-plugin==0.81.0rc13` names an exact version on purpose. Unpinned,
+`--from grp-mcp-plugin==0.81.0rc14` names an exact version on purpose. Unpinned,
 `uvx` would fetch whatever is newest at each launch, so the server could change
 underneath you between one start and the next while the plugin version stayed
 the same — untraceable the moment something breaks. New server versions arrive

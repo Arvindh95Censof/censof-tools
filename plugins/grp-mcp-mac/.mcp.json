@@ -2,7 +2,7 @@
   "mcpServers": {
     "grp-mcp": {
       "command": "uvx",
-      "args": ["--from", "grp-mcp-plugin==0.81.0rc13", "grp-mcp"],
+      "args": ["--from", "grp-mcp-plugin==0.81.0rc14", "grp-mcp"],
       "env": {
         "GRP_MCP_CONNECTIONS": "${GRP_MCP_CONNECTIONS:-}",
         "GRP_MCP_KB_SERVER": "${GRP_MCP_KB_SERVER:-}",
