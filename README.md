@@ -22,13 +22,22 @@ the configuration reference, updating, troubleshooting, and a
 [changelog](docs/CHANGELOG.md) of what changed in each release. It also carries the
 helper tools — `Set-KB-Token.cmd` and `Edit-Connections.cmd`.
 
-Once you have added this marketplace, that folder is also on your own disk at:
+Once you have added this marketplace, that folder is also on your own disk —
+`claude plugin marketplace add` clones the whole repository, docs included, and
+`claude plugin marketplace update` refreshes it:
 
 ```
-%USERPROFILE%\.claude\plugins\marketplaces\censof-tools\docs\
+Windows        %USERPROFILE%\.claude\plugins\marketplaces\censof-tools\docs\
+macOS, Linux   ~/.claude/plugins/marketplaces/censof-tools/docs/
 ```
 
-so the tools are there without a separate download.
+so the guides are there without a separate download, and the two `.cmd` helpers
+are there too on Windows. (On macOS and Linux those scripts do not run — the
+manual equivalents are in the guides; see
+[docs/tools/README.md](docs/tools/README.md).)
+
+Do not edit anything under that folder. It is a managed clone and every
+`marketplace update` overwrites it.
 
 ---
 
