@@ -86,6 +86,50 @@ Start a session and ask Claude to run `whoami`. You should get your instance
 name, tenant and endpoint back. If the tools are missing entirely, see
 [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
+## 6. Confirm both halves agree on where the file is — once
+
+Thirty seconds, first install only. It catches a failure that produces no error
+at all, and the Windows version of it cost a day on 2026-09-03.
+
+1. Note the **Connections file** path that step 3 printed.
+2. Ask Claude: **`what does kb_status say?`**
+3. Compare the `spec_path` it reports with the folder from step 1.
+
+**Same folder → you are done.** Different → the config page and the server are
+looking at two different places, and every edit you make will appear to save and
+have no effect.
+
+<details>
+<summary>Why this can happen, and what to do</summary>
+
+On Windows this is exactly what went wrong: Claude installs as an MSIX package,
+so processes it launches run inside a container where writes to
+`%LOCALAPPDATA%\grp-mcp` are silently redirected into
+`%LOCALAPPDATA%\Packages\Claude_<id>\LocalCache\Local\grp-mcp`. The config page,
+double-clicked from Explorer, ran outside that container and used the real, empty
+folder. It reported "No profiles yet" on a machine with twelve profiles working,
+and a save there would have created a second file the server never reads.
+
+macOS can do the same thing for a different reason: if the Claude app is
+sandboxed, `~` for the server resolves to
+`~/Library/Containers/<bundle-id>/Data/` rather than your real home, while a
+terminal-launched `grp-mcp-setup` writes to the real `~/.grp-mcp/`. Whether that
+applies here is untested — hence the check rather than a claim.
+
+**If the paths differ**, point both halves at the file the *server* named, and
+tell the OPEX team so the launcher can resolve it automatically the way the
+Windows one now does:
+
+```bash
+export GRP_MCP_CONNECTIONS="<the spec_path folder>/connections.json"
+```
+
+Put it in your shell profile, and re-run `grp-mcp-setup` afterwards — it honours
+that variable ahead of everything else, so the page will then edit the file the
+server actually reads.
+
+</details>
+
 ---
 
 ## Updating
