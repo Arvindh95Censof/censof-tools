@@ -161,7 +161,17 @@ everything else does, by updating the plugin.
 | Extra prerequisite | none | `uv` |
 | Config page | `grp-mcp.exe --setup` | `uvx --from grp-mcp-plugin==<version> grp-mcp-setup` |
 | Config file | `%LOCALAPPDATA%\grp-mcp\connections.json` | `~/.grp-mcp/connections.json` |
-| First launch | instant | a few seconds while `uv` downloads the wheel, once |
+| Very first launch | instant | a few seconds, once, while `uv` downloads the wheel |
+| Every launch after | ~1.6 s, steady | ~1.2 s median, more variable |
+
+**The Mac route is not slower in normal use.** Measured 2026-09-03, five launches
+each, start to a completed MCP handshake: the `.exe` took 1.63 s at the median
+and the `uvx` wheel 1.23 s. The bundled binary is a PyInstaller one-file build,
+so it unpacks itself to a temporary directory on *every* start, while `uvx` runs
+from an environment already on disk. Windows is steadier (1.63–1.70 s) and macOS
+quicker but more variable (1.23–2.60 s). Only the first launch, which downloads,
+is meaningfully slower. Worth stating because the bundled-installer version is
+naturally assumed to be the faster one, and it is not.
 
 Everything above the launch mechanism — the tools, the gates, the write
 verification, the KB preflight — is the same code.
