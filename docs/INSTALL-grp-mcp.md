@@ -189,7 +189,7 @@ A console window opens and your browser opens on `http://127.0.0.1:8765`.
 The console prints where your settings will be saved. It will say:
 
 ```
-Connections file : C:\Users\<you>\AppData\Local\grp-mcp\connections.json
+Connections file : C:\Users\<you>\grp-mcp\connections.json
 ```
 
 **That location is not a coincidence and you do not need to configure it.** The
@@ -211,7 +211,7 @@ In the browser:
 Every field is explained in [Appendix A](#appendix-a--every-field-on-the-connection-form).
 
 > **Keep that file out of OneDrive, Dropbox or any synced folder.** It holds your
-> ERP password in clear text. `%LOCALAPPDATA%` is deliberately a per-machine
+> ERP password in clear text. That folder is deliberately a per-machine
 > location that is never synced — which is exactly why the tool defaults there.
 > If you move the file somewhere else, see [CONFIGURE.md](CONFIGURE.md).
 
@@ -367,7 +367,7 @@ build of the same software.
    choose the `.mcpb`. **Double-clicking the file does not work** — Windows has
    no association for `.mcpb` and will just ask you what to open it with.
 2. Leave **Connections file** blank. The extension checks
-   `%LOCALAPPDATA%\grp-mcp\` on its own, the same place `Edit-Connections.cmd`
+   `%USERPROFILE%\grp-mcp\` on its own, the same place `Edit-Connections.cmd`
    writes.
 3. Leave **List only the core tools** on. It lists about 17 tools instead of
    120, handing roughly 48k tokens of context back to you before you ask
@@ -416,7 +416,7 @@ state and is worse than not checking at all, because it looks like a check.
 ## Things that look like problems and are not
 
 - **A missing `connections.json` in the working tree is correct.** It lives in
-  `%LOCALAPPDATA%\grp-mcp\`. Absence from the project folder is the intended
+  `%USERPROFILE%\grp-mcp\`. Absence from the project folder is the intended
   state, not a broken install.
 - **`variable_is_set: false` right after setting `KB_TOKEN`** means only that
   Claude Code has not been restarted since. It is not a wrong token.

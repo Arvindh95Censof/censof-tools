@@ -102,7 +102,7 @@ conversation is not enough; quit the application.
 
 Neither plugin keeps your settings inside itself. `censof-mcp` has none beyond
 its token, which lives in your environment. For `grp-mcp`, `connections.json`
-and `kb_server.json` live in `%LOCALAPPDATA%\grp-mcp\`, outside the plugin. Updating replaces the program only. You do not need to
+and `kb_server.json` live in `%USERPROFILE%\grp-mcp\`, outside the plugin. Updating replaces the program only. You do not need to
 re-enter anything, and you do not need to re-run the setup.
 
 *(This page is about the **plugin**, which serves Claude Code — desktop app and

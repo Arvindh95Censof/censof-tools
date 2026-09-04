@@ -116,7 +116,7 @@ Two possibilities, in order of likelihood:
 1. **Claude was not restarted.** The file is read at startup. Ask for
    `reload_config`, or restart.
 2. **A different file is winning.** A `connections.json` in the current working
-   directory takes precedence over the one in `%LOCALAPPDATA%`, and a
+   directory takes precedence over the one in `%USERPROFILE%\grp-mcp`, and a
    `GRP_MCP_CONNECTIONS` variable beats both. Ask `whoami` — it reports the file
    actually in use. See [CONFIGURE.md](CONFIGURE.md).
 
@@ -161,7 +161,7 @@ that is the one-token-two-names trap — the tool above fixes both at once.
 ### `kb_status` says `configured: false` — `grp-mcp`
 
 No `kb_server.json` found. Add it in the config page's knowledge-base section,
-or copy `templates\kb_server.example.json` into `%LOCALAPPDATA%\grp-mcp\`.
+or copy `templates\kb_server.example.json` into `%USERPROFILE%\grp-mcp\`.
 
 ### `variable_is_set: false` — `grp-mcp`
 

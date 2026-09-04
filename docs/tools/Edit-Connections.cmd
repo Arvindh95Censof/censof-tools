@@ -64,28 +64,32 @@ if not defined EXE (
 rem ===========================================================================
 rem 2. Find the connections.json the SERVER actually reads.
 rem
-rem Claude installs as an MSIX package. Everything IT launches - including the
-rem grp-mcp server - runs INSIDE that package container, where writes to
-rem %%LOCALAPPDATA%%\grp-mcp are silently redirected to
-rem   %%LOCALAPPDATA%%\Packages\Claude_<id>\LocalCache\Local\grp-mcp
-rem This .cmd is double-clicked from Explorer, which is OUTSIDE the container,
-rem so the very same %%LOCALAPPDATA%%\grp-mcp is a DIFFERENT folder - normally
-rem an empty one.
+rem The default moved on 2026-09-04, and the move was paid for. It used to be
+rem %%LOCALAPPDATA%%\grp-mcp. Claude installs as an MSIX package, so the server it
+rem launches sees %%LOCALAPPDATA%% as the package's LocalCache -- and an app update
+rem RESET that container overnight, deleting a user's connections.json holding
+rem twelve profiles including live client credentials. It was recovered only
+rem because an unrelated copy happened to still be in a OneDrive recycle bin. The
+rem folder had been re-CREATED rather than emptied, which is what a LocalCache
+rem reset looks like.
 rem
-rem Measured 2026-09-03 on a working install: PowerShell (outside) saw
-rem AppData\Local\grp-mcp EMPTY while the container copy held 12 profiles. The
-rem editor opened on nothing and reported "No profiles yet" - which reads as a
-rem broken or out-of-date UI, and a Save from that state would have written a
-rem SECOND connections.json that the server never reads. Nothing errors; the
-rem edits just never take effect.
+rem The 2026-09-03 version of this script made that WORSE: it taught the config
+rem page to write INTO the container, so the page and the server finally agreed
+rem -- on a location an app update can delete.
 rem
-rem GRP_MCP_CONNECTIONS beats every other candidate in load_config(), and
-rem kb_client.default_spec_path() places kb_server.json beside whatever it
-rem names - so setting this one variable fixes both files.
+rem %%USERPROFILE%%\grp-mcp sits outside AppData, so no container maps it and no
+rem update reaches it. Verified by listing the same path from inside the
+rem container and outside: both see the same files, where AppData\grp-mcp showed
+rem files to one and an empty folder to the other.
+rem
+rem Existing installs are NOT moved. Their file is found where it already is, and
+rem the server writes back to whatever it loaded, so nothing forks into two.
 rem ===========================================================================
 
 set "CFG="
 set "CFGWHY="
+set "LEGACY="
+set "HOMECFG=%USERPROFILE%\grp-mcp\connections.json"
 set "PLAIN=%LOCALAPPDATA%\grp-mcp\connections.json"
 
 rem 2a. An explicit override wins here exactly as it does in the server.
@@ -94,49 +98,44 @@ if defined GRP_MCP_CONNECTIONS (
   set "CFGWHY=GRP_MCP_CONNECTIONS was already set"
 )
 
-rem 2b. An existing config inside the Claude container. Newest package first,
-rem     in case an old one was left behind by a previous install.
+rem 2b. The current default.
+if not defined CFG if exist "%HOMECFG%" (
+  set "CFG=%HOMECFG%"
+  set "CFGWHY=found in the standard location"
+)
+
+rem 2c. LEGACY: inside the Claude container. Still read so an older install keeps
+rem     working; never created here any more.
 if not defined CFG (
   for /f "delims=" %%P in ('dir /b /a:d /o-d "%LOCALAPPDATA%\Packages\Claude_*" 2^>nul') do (
     if not defined CFG if exist "%LOCALAPPDATA%\Packages\%%P\LocalCache\Local\grp-mcp\connections.json" (
       set "CFG=%LOCALAPPDATA%\Packages\%%P\LocalCache\Local\grp-mcp\connections.json"
-      set "CFGWHY=found in the Claude app container - %%P"
+      set "CFGWHY=LEGACY - inside the Claude app container"
+      set "LEGACY=1"
     )
   )
 )
 
-rem 2c. An existing config in the plain location - a non-packaged Claude, or
-rem     the CLI installed on its own.
+rem 2d. LEGACY: the plain AppData location.
 if not defined CFG if exist "%PLAIN%" (
   set "CFG=%PLAIN%"
-  set "CFGWHY=found in the standard location"
+  set "CFGWHY=LEGACY - under AppData"
+  set "LEGACY=1"
 )
 
-rem 2d. Nothing exists yet: FIRST RUN. Write where the server will LOOK, which
-rem     for a packaged Claude is inside the container. Getting this wrong is the
-rem     same bug in reverse - a first profile saved outside the container is
-rem     invisible to the server that is supposed to load it.
+rem 2e. Nothing yet: FIRST RUN. Create it where an app update cannot reach it.
 if not defined CFG (
-  for /f "delims=" %%P in ('dir /b /a:d /o-d "%LOCALAPPDATA%\Packages\Claude_*" 2^>nul') do (
-    if not defined CFG if exist "%LOCALAPPDATA%\Packages\%%P\LocalCache\Local" (
-      set "CFG=%LOCALAPPDATA%\Packages\%%P\LocalCache\Local\grp-mcp\connections.json"
-      set "CFGWHY=first run - creating it in the Claude app container"
-    )
-  )
-)
-if not defined CFG (
-  set "CFG=%PLAIN%"
-  set "CFGWHY=first run - no Claude package container on this machine"
+  set "CFG=%HOMECFG%"
+  set "CFGWHY=first run - creating it outside AppData, where updates cannot delete it"
 )
 
 set "GRP_MCP_CONNECTIONS=%CFG%"
 
-rem A config in BOTH places usually means someone already hit this and saved
-rem into the copy the server ignores. Report it, but do NOT tell anyone to
-rem delete it: if this .cmd is ever run from a terminal that Claude itself
-rem spawned, that terminal is inside the container too, %LOCALAPPDATA%\grp-mcp
-rem redirects, and the "other" file is THE SAME FILE under a second name.
-rem Deleting on that advice would destroy the live config.
+rem A config in BOTH places usually means someone already hit the container split
+rem and saved into the copy the server ignores. Report it, but do NOT tell anyone
+rem to delete it: run this .cmd from a terminal Claude itself spawned and that
+rem terminal is inside the container too, %%LOCALAPPDATA%%\grp-mcp redirects, and
+rem the "other" file is THE SAME FILE under a second name.
 set "OTHER="
 if /i not "%CFG%"=="%PLAIN%" if exist "%PLAIN%" set "OTHER=%PLAIN%"
 
@@ -144,6 +143,27 @@ echo   Using   : %EXE%
 echo   Config  : %CFG%
 echo             %CFGWHY%
 echo.
+if defined LEGACY (
+  echo   NOTE: that file is somewhere a Claude app update can DELETE. It happened
+  echo         on 2026-09-04 and cost twelve saved profiles. To move it somewhere
+  echo         safe, close this window and run:
+  echo.
+  echo             move "%CFG%" "%USERPROFILE%\grp-mcp\"
+  echo             setx GRP_MCP_CONNECTIONS "%USERPROFILE%\grp-mcp\connections.json"
+  echo.
+  echo         then restart Claude. Back the file up either way - it is the only
+  echo         copy of your ERP credentials.
+  echo.
+)
+if "%CFGWHY:~0,9%"=="first run" (
+  echo   ONE-TIME STEP, and it matters. This window sets GRP_MCP_CONNECTIONS for
+  echo   the config page only. The MCP server is started by Claude, not by this
+  echo   script, so it will not see it - and a plugin binary older than 0.81.0rc14
+  echo   still looks under AppData by default. Run this once, then restart Claude:
+  echo.
+  echo       setx GRP_MCP_CONNECTIONS "%CFG%"
+  echo.
+)
 if defined OTHER (
   echo   NOTE: a connections.json also exists at
   echo         %OTHER%

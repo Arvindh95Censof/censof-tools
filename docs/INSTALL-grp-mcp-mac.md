@@ -160,7 +160,7 @@ everything else does, by updating the plugin.
 | How it starts | bundled `grp-mcp.exe` | `uvx` fetches the wheel from PyPI |
 | Extra prerequisite | none | `uv` |
 | Config page | `grp-mcp.exe --setup` | `uvx --from grp-mcp-plugin==<version> grp-mcp-setup` |
-| Config file | `%LOCALAPPDATA%\grp-mcp\connections.json` | `~/.grp-mcp/connections.json` |
+| Config file | `%USERPROFILE%\grp-mcp\connections.json` | `~/.grp-mcp/connections.json` |
 | Very first launch | instant | a few seconds, once, while `uv` downloads the wheel |
 | Every launch after | ~1.6 s, steady | ~1.2 s median, more variable |
 

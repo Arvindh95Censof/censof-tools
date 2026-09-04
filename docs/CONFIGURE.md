@@ -32,12 +32,32 @@ Two files hold your configuration. **Both default to a location the plugin finds
 on its own** — there is nothing to point it at.
 
 ```
-%LOCALAPPDATA%\grp-mcp\connections.json    your instance profiles and credentials
-%LOCALAPPDATA%\grp-mcp\kb_server.json      which knowledge base to consult
+%USERPROFILE%\grp-mcp\connections.json    your instance profiles and credentials
+%USERPROFILE%\grp-mcp\kb_server.json      which knowledge base to consult
 ```
 
-On a normal Windows machine that expands to
-`C:\Users\<you>\AppData\Local\grp-mcp\`.
+On a normal Windows machine that expands to `C:\Users\<you>\grp-mcp\`.
+
+> **This changed on 2026-09-04, and the old location is still read.** It used to
+> be `%LOCALAPPDATA%\grp-mcp`. Claude installs as an MSIX package, so the server
+> it launches sees `%LOCALAPPDATA%` as the package's *LocalCache* — and an app
+> update reset that container overnight, deleting a user's `connections.json`
+> with twelve profiles in it, including live client credentials. It was
+> recovered only because an unrelated copy happened to still be in a OneDrive
+> recycle bin.
+>
+> `%USERPROFILE%\grp-mcp` is outside `AppData`, so no container maps it and no
+> update reaches it. If your config is already in the old place it keeps
+> working — it is still searched, and writes go back to whatever file was
+> loaded, so nothing forks into two copies. To move it:
+>
+> ```powershell
+> move "$env:LOCALAPPDATA\grp-mcp\*" "$env:USERPROFILE\grp-mcp\"
+> setx GRP_MCP_CONNECTIONS "$env:USERPROFILE\grp-mcp\connections.json"
+> ```
+>
+> **Back that file up wherever it lives.** It is the only copy of your ERP
+> credentials, and nothing else on your machine has one.
 
 **On macOS and Linux** (the `grp-mcp-mac` plugin) there is no `LOCALAPPDATA`, so
 the same two files live in your home directory instead:
@@ -47,10 +67,10 @@ the same two files live in your home directory instead:
 ~/.grp-mcp/kb_server.json      which knowledge base to consult
 ```
 
-Everything below applies to both — read `%LOCALAPPDATA%\grp-mcp\` and
+Everything below applies to both — read `%USERPROFILE%\grp-mcp\` and
 `~/.grp-mcp/` as the same place under two names.
 
-`%LOCALAPPDATA%` is deliberate. It is per-machine and is **never roamed or
+`%USERPROFILE%\grp-mcp` is deliberate. It is per-machine and is **never roamed or
 synced** — which matters because `connections.json` holds your ERP password in
 clear text. The older habit of keeping these beside the program put them in
 Downloads or on the Desktop, both of which are routinely OneDrive-synced.
@@ -61,19 +81,21 @@ Downloads or on the Desktop, both of which are routinely OneDrive-synced.
 
 1. `%GRP_MCP_CONNECTIONS%`, if that variable is set
 2. `connections.json` in the current working directory
-3. `%LOCALAPPDATA%\grp-mcp\connections.json` ← **the normal answer**
+3. `%USERPROFILE%\grp-mcp\connections.json` ← **the normal answer**
    (macOS/Linux: `~/.grp-mcp/connections.json`)
-4. the source checkout, for developers
+4. `%USERPROFILE%\grp-mcp\connections.json` — the pre-2026-09-04 location, still
+   read so existing installs keep working, never written to again
+5. the source checkout, for developers
 
 `kb_server.json` follows the same idea: `%GRP_MCP_KB_SERVER%`, then beside
-`connections.json`, then the working directory, then `%LOCALAPPDATA%\grp-mcp\`.
+`connections.json`, then the working directory, then `%USERPROFILE%\grp-mcp\`.
 
 Note item 2. A stray `connections.json` in a project folder **wins** over the
-one in `%LOCALAPPDATA%`. If a profile change seems to have no effect, look for
+one in `%USERPROFILE%\grp-mcp`. If a profile change seems to have no effect, look for
 one of those before anything else.
 
 > **Writing** never targets the working directory — the config page always saves
-> to `%LOCALAPPDATA%\grp-mcp\` (or wherever an environment variable points). This
+> to `%USERPROFILE%\grp-mcp\` (or wherever an environment variable points). This
 > is asymmetric on purpose: a program's working directory is chosen by whatever
 > launched it, so writing credentials there would scatter them into whichever
 > project folder happened to be open.

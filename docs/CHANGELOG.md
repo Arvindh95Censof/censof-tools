@@ -80,6 +80,32 @@ skill.
 
 ## grp-mcp
 
+### Config moved out of AppData · 4 Sep 2026
+
+**A Claude app update deleted a user's saved connections overnight.** Twelve
+profiles, including live client credentials, gone with no warning and no error —
+the folder was recreated empty. Recovered only because an unrelated copy happened
+to still be sitting in a OneDrive recycle bin.
+
+The cause: `connections.json` defaulted to `%LOCALAPPDATA%\grp-mcp`. Claude
+installs as an MSIX package, so the server it launches sees `%LOCALAPPDATA%` as
+the package's *LocalCache* — and a container reset takes that folder with it. A
+default a routine update can delete is not a default.
+
+It is now **`%USERPROFILE%\grp-mcp`**, outside `AppData`, where no container maps
+it and no update reaches it. Verified by listing the same path from inside the
+container and outside — both see the same files, where the old path showed files
+to one and an empty folder to the other.
+
+**Nothing moves on its own.** The old location is still searched, and saves go
+back to whichever file was loaded, so an existing install keeps working and no
+config forks into two copies. `Edit-Connections.cmd` now says plainly when it
+finds a config somewhere an update can delete, and gives the two commands to move
+it.
+
+Worth doing even so: **back that file up.** It holds every ERP password you have
+configured, in clear text, and nothing else on your machine has a copy.
+
 ### grp-mcp-mac · 3 Sep 2026
 
 **A new plugin, for macOS and Linux.** The `grp-mcp` plugin bundles
