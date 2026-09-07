@@ -4,7 +4,7 @@
       "command": "uvx",
       "args": [
         "--from",
-        "grp-mcp-plugin[search]==0.81.0rc15",
+        "grp-mcp-plugin[search]==0.81.0rc16",
         "grp-mcp"
       ],
       "env": {

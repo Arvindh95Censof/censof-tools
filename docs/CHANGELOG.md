@@ -80,6 +80,36 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc16 · 7 Sep 2026
+
+**Nothing you will notice, and that is the point of saying so.** The server is
+byte-for-byte the same as rc15. This release exists because the checks that guard
+what gets published were not catching enough, and the fix belongs in an artifact
+rather than in a note somewhere.
+
+The release gate now catches **client names and internal hostnames**, not only
+things shaped like passwords and API keys. On 7 Sep three of them reached public
+packages while that gate reported clean, because a customer's name looks nothing
+like a credential. It cannot simply hold a list of the names, either — the gate
+itself is published, so writing them into it would be the leak. It reads them at
+release time from the configuration that never leaves the maintainer's machine.
+
+If you are already on rc15 there is no urgency. Update when convenient:
+
+```powershell
+claude plugin marketplace update censof-tools
+claude plugin update grp-mcp@censof-tools
+```
+
+**One thing worth knowing if you update immediately after a release is
+announced:** `uv` caches its view of the package index, so a brand-new version
+can report *"requirements are unsatisfiable"* for a minute or two. It is not a
+broken install — wait, or force a refresh once:
+
+```powershell
+uv cache clean grp-mcp-plugin
+```
+
 ### Both Acumatica plugins at 0.81.0-rc15 · 7 Sep 2026
 
 **`grp-mcp` no longer ships a Windows binary, and now needs `uv` like the Mac one
