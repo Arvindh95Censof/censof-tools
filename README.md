@@ -107,6 +107,17 @@ greyed out with "On latest version" even when a new version exists — a known
 Claude Code bug, not a fault here. [docs/UPDATING.md](docs/UPDATING.md) has the
 issue links.
 
+> **Coming from `grp-mcp` 0.81.0-rc14 or earlier? Install `uv` first.**
+>
+> ```powershell
+> winget install astral-sh.uv
+> ```
+>
+> The plugin no longer carries its own program; it runs the server from PyPI and
+> `uv` fetches it. Update without it and you get no Acumatica tools **and no
+> error** — nothing on screen says why. Reopen your terminal afterwards so the
+> PATH change takes. `brew install uv` on a Mac; `censof-mcp` does not need it.
+
 ---
 
 ## Which app gets these

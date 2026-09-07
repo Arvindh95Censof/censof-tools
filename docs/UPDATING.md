@@ -31,6 +31,39 @@ has to be restarted to pick it up.
 That is the whole procedure. The rest of this page explains why it is not a
 button, and how to confirm it worked.
 
+---
+
+## One-time: the Acumatica plugin needs `uv` from 0.81.0-rc15 on
+
+**If you are updating the Acumatica plugin from rc14 or earlier, install this
+first.** Up to rc14 the Windows plugin carried its own program and needed
+nothing. It no longer ships one — it runs the server from PyPI, and `uv` is what
+fetches and runs it.
+
+```powershell
+winget install astral-sh.uv
+```
+
+On macOS or Linux: `brew install uv`, or
+`curl -LsSf https://astral.sh/uv/install.sh | sh`.
+
+Then **close and reopen your terminal** — the installer adds a folder to your
+PATH and an already-open window will not see it — and check:
+
+```powershell
+uv --version
+```
+
+**Why this is called out rather than left to fail:** if you update without `uv`
+and restart, Claude tries to start the server, cannot, and you get **no
+Acumatica tools and no error message**. Nothing on screen names the cause. If
+that has already happened to you, it is not a broken install — install `uv`,
+restart Claude, and everything comes back. Your connection settings are
+untouched throughout.
+
+You do **not** need Python. `uv` brings its own. The knowledge-base plugin
+(`censof-mcp`) does not need `uv` at all — it calls a hosted service.
+
 **Wondering what you just installed?** [CHANGELOG.md](CHANGELOG.md) lists every
 release and what you will notice about it. The plugin list also shows a one-line
 summary of the latest version in each plugin’s description.

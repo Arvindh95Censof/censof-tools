@@ -125,4 +125,9 @@ The first line is not optional and is invisible from the plugin's page: until
 the marketplace is refreshed, that page reports your installed version as the
 latest and is telling the truth about what it has.
 
+**Updating from 0.81.0-rc14 or earlier?** Install `uv` before you restart — see
+the prerequisite at the top. Up to rc14 this plugin carried its own program and
+needed nothing; without `uv` the server cannot start, and the symptom is no
+Acumatica tools and no error message.
+
 [bug]: https://github.com/anthropics/claude-code/issues/54276
