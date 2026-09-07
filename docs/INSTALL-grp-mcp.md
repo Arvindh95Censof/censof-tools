@@ -165,7 +165,7 @@ Confirm:
 claude plugin list
 ```
 
-**Expect:** `grp-mcp@censof-tools` with a version like `0.81.0-rc19`.
+**Expect:** `grp-mcp@censof-tools` with a version like `0.81.0-rc20`.
 
 > **Also available:** `censof-mcp` in the same marketplace searches the GRP
 > knowledge base — closed RFS tickets, Acumatica documentation and the GRP
@@ -231,7 +231,7 @@ one case where you do set a variable: see [CONFIGURE.md](CONFIGURE.md).
 
 In the browser:
 
-1. Give the profile a **short name** — `prod`, `staging`, `dbkk`. This is what
+1. Give the profile a **short name** — `prod`, `staging`, `uat`. This is what
    you will say to Claude when you want a specific instance.
 2. Fill in the six values from Step 4.
 3. Leave **allow_write**, **allow_delete** and **allow_publish** **off** for now.
@@ -307,7 +307,7 @@ Then ask Claude:
 
 ```json
 {
-  "grp_mcp_version": "0.81.0rc19",
+  "grp_mcp_version": "0.81.0rc20",
   "instance": "staging",
   "tenant": "MyCompany 270326",
   "base_url": "https://acumatica.example.com/MyCompany",

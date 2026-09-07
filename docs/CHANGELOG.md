@@ -80,6 +80,56 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc20 · 8 Sep 2026
+
+**Error messages actually reach you now.** This is the one to know about, because
+it was quietly making everything else look worse than it was.
+
+Every failure — a mistyped argument, a record that does not exist, a permission
+refusal — arrived as the same sentence:
+
+```
+Error executing tool get_entity
+```
+
+No status code, no message, no field name. Three unrelated problems produced
+byte-identical output, so one fault looked like three, and the fix was never in
+what you were shown. The server had written a perfectly good explanation every
+time; something between it and you was deleting the text and keeping only the
+tool's name. It was not in the logs either, so there was no way to go and look.
+
+You now get the whole thing. Including the ones that tell you exactly what to do:
+
+```
+field 'Department' is ambiguous - qualify it: Employee.Department, AddressInfo.Department
+Writes are disabled for instance 'X'. Set "allow_write": true in its connections.json profile
+API Login Limit
+```
+
+Genuine internal faults are still kept back — that part was deliberate and stays.
+What changed is that our own messages, the ones written for you to read, are no
+longer treated as internal.
+
+This also means last release's work is finally visible: rc19 rewrote Acumatica's
+refusals so the cause comes first, and none of it could reach a client.
+
+**A write that worked is no longer reported as failed.** Creating a record and
+setting an account to `200000` could come back "the read-back CONTRADICTS this
+write — treat it as NOT persisted", on a record that was complete and correct.
+The screen takes the code you typed; the table stores an internal ID for it, and
+the two were being compared directly. Eight fields at once in one case. If you
+have re-done work because of that message, it may not have needed re-doing.
+
+**`dry_run` works on a read-only profile.** Rehearsing a write is the one thing
+you would want *before* asking for write access, and it was refused for not
+having write access. Nothing about what it does has changed — it still writes
+nothing.
+
+**The undo instructions no longer point at a dead end.** After creating a record,
+the `undo` block named a tool that could not accept the details it was given, and
+often could not reach that record at all. It now gives the route that works, or
+both routes and how to tell which applies.
+
 ### Both Acumatica plugins at 0.81.0-rc19 · 7 Sep 2026
 
 **When Acumatica refuses something, you now get the reason first.**
