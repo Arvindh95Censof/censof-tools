@@ -75,4 +75,4 @@ full:
 | Instead of | Do this |
 | --- | --- |
 | `Set-KB-Token.cmd` | [INSTALL-censof-mcp.md](../INSTALL-censof-mcp.md) → *On macOS or Linux — setting the token by hand*. Read it rather than guessing: a shell profile does not reach an app launched from Finder, which fails as an auth error with a healthy-looking plugin. |
-| `Edit-Connections.cmd` | `uvx --from grp-mcp-plugin==0.81.0rc17 grp-mcp-setup` — see [INSTALL-grp-mcp-mac.md](../INSTALL-grp-mcp-mac.md) |
+| `Edit-Connections.cmd` | `uvx --from grp-mcp-plugin==0.81.0rc18 grp-mcp-setup` — see [INSTALL-grp-mcp-mac.md](../INSTALL-grp-mcp-mac.md) |

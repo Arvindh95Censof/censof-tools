@@ -1,7 +1,7 @@
 {
   "name": "grp-mcp-mac",
-  "description": "Superseded by the grp-mcp plugin, which is cross-platform as of 0.81.0-rc15 and identical to this one; this stays published so existing macOS and Linux installs keep updating. It existed because grp-mcp used to bundle a Windows .exe that a Mac could not execute; both now run the same code from PyPI through uvx, so the split has no purpose left. Install ONE of the two, never both - they register the same server name. Needs uv: 'brew install uv'. Run 'uvx --from grp-mcp-plugin==0.81.0rc17 grp-mcp-setup' once to create your connections file; the server then finds it with no environment variable set. LATEST (0.81.0-rc17): identical to grp-mcp. find_tool is now lexical-first and dependency-free; the [search] extra is no longer pinned. Full history in docs/CHANGELOG.md.",
-  "version": "0.81.0-rc17",
+  "description": "Superseded by the grp-mcp plugin, which is cross-platform as of 0.81.0-rc15 and identical to this one; this stays published so existing macOS and Linux installs keep updating. It existed because grp-mcp used to bundle a Windows .exe that a Mac could not execute; both now run the same code from PyPI through uvx, so the split has no purpose left. Install ONE of the two, never both - they register the same server name. Needs uv: 'brew install uv'. Run 'uvx --from grp-mcp-plugin==0.81.0rc18 grp-mcp-setup' once to create your connections file; the server then finds it with no environment variable set. LATEST (0.81.0-rc18): identical to grp-mcp. A small release: more everyday vocabulary in find_tool, and a long notice about an optional component removed. Full history in docs/CHANGELOG.md.",
+  "version": "0.81.0-rc18",
   "author": {
     "name": "Censof OPEX",
     "email": "arvindh@censof.com"

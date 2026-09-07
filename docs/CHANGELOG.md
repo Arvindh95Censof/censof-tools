@@ -80,6 +80,35 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc18 · 7 Sep 2026
+
+**A small one, and worth saying so.** Nothing here changes what the plugin can do.
+
+**`find_tool` understands more of the words you actually use.** Asking for a
+supplier, a payment, a receipt, a purchase order, a sales order, a warehouse or a
+bill now finds the right tool — those words appeared in none of the 120 tool
+descriptions before, so a question phrased that way had nothing to match. Measured
+on the same test questions: 67% to 70% first-time-right on real wording. Two more
+questions out of a hundred. Real, but small.
+
+Some words were left out on purpose. There is no bank reconciliation, cheque,
+email or claims tool in this server, so teaching `find_tool` those words would
+only make it answer confidently with something that cannot do the job. Ask about
+those and you still get "nothing here answers that", which is the truthful reply.
+
+**`find_tool` stopped printing a long notice about an optional component.** Every
+result carried a paragraph explaining how to install a search add-on, written when
+that add-on was normally present. Since rc17 nobody has it — it was removed
+because the plugin measured *better* without it — so the notice appeared every
+time and read like a fault. It is one short line now.
+
+Nothing to do differently. Update when convenient:
+
+```powershell
+claude plugin marketplace update censof-tools
+claude plugin update grp-mcp@censof-tools
+```
+
 ### Both Acumatica plugins at 0.81.0-rc17 · 7 Sep 2026
 
 **`find_tool` got a lot better, and lost its only heavy dependency.** It is the
