@@ -80,6 +80,38 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc17 · 7 Sep 2026
+
+**`find_tool` got a lot better, and lost its only heavy dependency.** It is the
+tool that finds the right one of 120 from a plain description of what you want.
+It used to rank by an AI embedding model; it now ranks by a lexical scorer built
+into the package, with the model gone.
+
+Measured on the same questions, before and after — top hit correct:
+
+| | before | after |
+| --- | --- | --- |
+| real user wording, lifted verbatim from transcripts | 39% | **67%** |
+| all 117 labelled questions | 56% | **76%** |
+
+The embedding model was not misconfigured; it was the wrong tool for a small
+corpus of ERP jargon, where rare exact terms matter more than paraphrase. It was
+measured to score *lower* alongside the lexical scorer than the lexical scorer
+alone, so it is no longer pinned.
+
+**What you will notice:** the first `find_tool` call no longer downloads a
+~210 MB model, and `uv` installs about 95 MB less on first launch. `find_tool`
+also now says `OFF_DOMAIN` when a question shares no vocabulary with any tool,
+instead of returning a confident-looking wrong answer.
+
+Everyday words — dropdown, approve, void, reopen, stuck — that appeared in no tool
+description now do, so asking in your own words works more often.
+
+```powershell
+claude plugin marketplace update censof-tools
+claude plugin update grp-mcp@censof-tools
+```
+
 ### Both Acumatica plugins at 0.81.0-rc16 · 7 Sep 2026
 
 **Nothing you will notice, and that is the point of saying so.** The server is

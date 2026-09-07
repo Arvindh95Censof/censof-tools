@@ -14,7 +14,7 @@ had to be a second plugin rather than a branch inside the first.
 As of rc15 `grp-mcp` ships no binary either. Both plugins now run the same line:
 
 ```
-uvx --from grp-mcp-plugin[search]==0.81.0rc16 grp-mcp
+uvx --from grp-mcp-plugin==0.81.0rc17 grp-mcp
 ```
 
 which works the same on Windows, macOS and Linux. The reason for the split is
@@ -33,7 +33,7 @@ you would get every tool twice with no way to tell which one answered.
 Create your connections file once:
 
 ```
-uvx --from grp-mcp-plugin==0.81.0rc16 grp-mcp-setup
+uvx --from grp-mcp-plugin==0.81.0rc17 grp-mcp-setup
 ```
 
 It opens `http://127.0.0.1:8765` and writes to `~/.grp-mcp/connections.json`,
@@ -44,12 +44,12 @@ Full walkthrough: [docs/INSTALL-grp-mcp-mac.md](../../docs/INSTALL-grp-mcp-mac.m
 
 ## Why the version is pinned
 
-`--from grp-mcp-plugin[search]==0.81.0rc16` names an exact version on purpose.
+`--from grp-mcp-plugin==0.81.0rc17` names an exact version on purpose.
 Unpinned, `uvx` would fetch whatever is newest at each launch, so the server
 could change underneath you between one start and the next while the plugin
 version stayed the same — untraceable the moment something breaks. New server
 versions arrive by updating the plugin, like everything else.
 
-`[search]` is the extra that installs `fastembed`, which `find_tool` needs. It
-was missing from the pin until rc15, so `find_tool` reported itself unavailable
-here too.
+`find_tool` needs no extra as of rc17 — it ranks by a lexical scorer built into
+the package. (`[search]` was pinned from rc15 to rc16 for an embedding model that
+measured worse than the lexical scorer, and is no longer needed.)

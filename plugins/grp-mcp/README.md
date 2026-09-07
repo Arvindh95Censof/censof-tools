@@ -11,7 +11,7 @@ the middle, and your credentials stay on your machine.
 The plugin ships no binary. It runs the server from PyPI:
 
 ```
-uvx --from grp-mcp-plugin[search]==0.81.0rc16 grp-mcp
+uvx --from grp-mcp-plugin==0.81.0rc17 grp-mcp
 ```
 
 So [`uv`](https://docs.astral.sh/uv/) has to be installed once:
@@ -41,7 +41,7 @@ The server needs a `connections.json` holding your Acumatica instance and its
 credentials. It can create one for you:
 
 ```
-uvx --from grp-mcp-plugin==0.81.0rc16 grp-mcp-setup
+uvx --from grp-mcp-plugin==0.81.0rc17 grp-mcp-setup
 ```
 
 That opens a config page in your browser. Add your instance, save, close the
@@ -82,20 +82,19 @@ rolled back automatically.
 ## The first launch is slow, once
 
 `uvx` downloads the wheel and its dependencies the first time, then caches them —
-later launches start in about a second. The first `find_tool` call additionally
-downloads its embedding model (~210 MB) once; after that it runs fully offline.
-Everything else works while that is happening.
+later launches start in about a second. Nothing else downloads — as of rc17
+`find_tool` needs no model.
 
 ## Why the version is pinned
 
-`--from grp-mcp-plugin[search]==0.81.0rc16` names an exact version on purpose.
+`--from grp-mcp-plugin==0.81.0rc17` names an exact version on purpose.
 Unpinned, `uvx` would fetch whatever is newest at each launch, so the server
 could change underneath you between one start and the next while the plugin
 version stayed the same — untraceable the moment something breaks. New server
 versions arrive by updating the plugin, like everything else.
 
-`[search]` is the extra that installs `fastembed`. Without it the server still
-runs and every tool still works; only `find_tool` reports itself unavailable.
+`find_tool` needs no extra as of rc17: it ranks by a lexical scorer built into
+the package, and measured better without the old embedding model than with it.
 
 ## Check it works
 
