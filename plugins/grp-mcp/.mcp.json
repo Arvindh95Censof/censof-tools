@@ -1,7 +1,12 @@
 {
   "mcpServers": {
     "grp-mcp": {
-      "command": "${CLAUDE_PLUGIN_ROOT}/server/grp-mcp.exe",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "grp-mcp-plugin[search]==0.81.0rc15",
+        "grp-mcp"
+      ],
       "env": {
         "GRP_MCP_CONNECTIONS": "${GRP_MCP_CONNECTIONS:-}",
         "GRP_MCP_KB_SERVER": "${GRP_MCP_KB_SERVER:-}",

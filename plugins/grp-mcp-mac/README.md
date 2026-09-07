@@ -1,34 +1,39 @@
 # grp-mcp-mac
 
-The Acumatica plugin for **macOS and Linux**.
+**Use [`grp-mcp`](../grp-mcp/README.md) instead. This plugin is now identical to
+it.** It stays here so that anyone who already installed it keeps receiving
+updates; nothing about it is broken.
 
-Same server as [`grp-mcp`](../grp-mcp/README.md), started differently: that one
-bundles `server/grp-mcp.exe`, a Windows binary a Mac cannot execute, so on macOS
-it installs cleanly and then never starts. A plugin's `.mcp.json` cannot select a
-different command per operating system, so this had to be a separate plugin
-rather than a fix inside the other one.
+## Why it existed, and why it no longer needs to
 
-This plugin ships no binary. It runs the same code from PyPI:
+`grp-mcp` used to bundle `server/grp-mcp.exe`, a Windows binary a Mac cannot
+execute — it installed cleanly on macOS and then never started. A plugin's
+`.mcp.json` cannot select a different command per operating system, so the fix
+had to be a second plugin rather than a branch inside the first.
+
+As of rc15 `grp-mcp` ships no binary either. Both plugins now run the same line:
 
 ```
-uvx --from grp-mcp-plugin==0.81.0rc14 grp-mcp
+uvx --from grp-mcp-plugin[search]==0.81.0rc15 grp-mcp
 ```
 
-**Install `grp-mcp` or `grp-mcp-mac`, never both.** They register the same server
-name, so you would get every tool twice with no way to tell which one answered.
+which works the same on Windows, macOS and Linux. The reason for the split is
+gone.
+
+**Install one or the other, never both.** They register the same server name, so
+you would get every tool twice with no way to tell which one answered.
 
 ## Prerequisite
 
 [`uv`](https://docs.astral.sh/uv/) — `brew install uv`, or
-`curl -LsSf https://astral.sh/uv/install.sh | sh`. This is the one thing the
-Windows plugin does not need.
+`curl -LsSf https://astral.sh/uv/install.sh | sh`.
 
 ## Setup
 
 Create your connections file once:
 
 ```
-uvx --from grp-mcp-plugin==0.81.0rc14 grp-mcp-setup
+uvx --from grp-mcp-plugin==0.81.0rc15 grp-mcp-setup
 ```
 
 It opens `http://127.0.0.1:8765` and writes to `~/.grp-mcp/connections.json`,
@@ -39,8 +44,12 @@ Full walkthrough: [docs/INSTALL-grp-mcp-mac.md](../../docs/INSTALL-grp-mcp-mac.m
 
 ## Why the version is pinned
 
-`--from grp-mcp-plugin==0.81.0rc14` names an exact version on purpose. Unpinned,
-`uvx` would fetch whatever is newest at each launch, so the server could change
-underneath you between one start and the next while the plugin version stayed
-the same — untraceable the moment something breaks. New server versions arrive
-by updating the plugin, like everything else.
+`--from grp-mcp-plugin[search]==0.81.0rc15` names an exact version on purpose.
+Unpinned, `uvx` would fetch whatever is newest at each launch, so the server
+could change underneath you between one start and the next while the plugin
+version stayed the same — untraceable the moment something breaks. New server
+versions arrive by updating the plugin, like everything else.
+
+`[search]` is the extra that installs `fastembed`, which `find_tool` needs. It
+was missing from the pin until rc15, so `find_tool` reported itself unavailable
+here too.

@@ -2,13 +2,20 @@
 
 Same server as [`grp-mcp`](INSTALL-grp-mcp.md), started a different way.
 
-**Why there are two.** The `grp-mcp` plugin bundles `server/grp-mcp.exe`, a
-Windows binary. macOS cannot run it, so on a Mac that plugin installs fine and
-then never starts — no error you would recognise, just no Acumatica tools. A
-plugin's `.mcp.json` has no way to pick a different command per operating
-system, so the answer could not be a fix inside `grp-mcp`; it had to be a second
-plugin. This one runs the identical Python code from PyPI instead of a bundled
-binary.
+> **`grp-mcp` now works on macOS and Linux too**, and new installs should use
+> it. This page is still the right walkthrough — every step below is the same —
+> just install `grp-mcp@censof-tools` instead of `grp-mcp-mac@censof-tools`.
+
+**Why there were two.** Up to 0.81.0-rc14 the `grp-mcp` plugin bundled
+`server/grp-mcp.exe`, a Windows binary. macOS cannot run it, so on a Mac that
+plugin installed fine and then never started — no error you would recognise,
+just no Acumatica tools. A plugin's `.mcp.json` has no way to pick a different
+command per operating system, so the answer could not be a fix inside `grp-mcp`;
+it had to be a second plugin.
+
+As of rc15 `grp-mcp` ships no binary either — both plugins run the identical
+Python code from PyPI, by the identical command. `grp-mcp-mac` stays published
+so that anyone already on it keeps receiving updates.
 
 **Install one or the other, never both.** They register the same server name and
 you would get every tool twice, with no way to tell which answered.
@@ -21,8 +28,9 @@ you would get every tool twice, with no way to tell which answered.
   [INSTALL-censof-mcp.md](INSTALL-censof-mcp.md) step 1 if you do not have it.
   On macOS the **Add marketplace** button in the app registers the marketplace
   and then stops without installing; the CLI is the working route.
-- **`uv`** — this is the one thing Windows users do not need. It fetches and runs
-  the server in its own isolated environment.
+- **`uv`** — it fetches and runs the server in its own isolated environment.
+  Windows needs it too now (`winget install astral-sh.uv`); until rc15 it did
+  not, because that plugin carried a binary.
 
   ```bash
   brew install uv
@@ -62,7 +70,7 @@ The server reads its instances from `connections.json`. Create it with the same
 config page Windows users get:
 
 ```bash
-uvx --from grp-mcp-plugin==0.81.0rc14 grp-mcp-setup
+uvx --from grp-mcp-plugin==0.81.0rc15 grp-mcp-setup
 ```
 
 A browser tab opens on `http://127.0.0.1:8765`. Add your instance, click **Save
@@ -145,7 +153,7 @@ claude plugin update grp-mcp-mac@censof-tools
 Then restart Claude Code.
 
 The version of the server is **pinned in the plugin**, not resolved fresh each
-time — `uvx --from grp-mcp-plugin==0.81.0rc14`. That is deliberate: an unpinned
+time — `uvx --from grp-mcp-plugin[search]==0.81.0rc15`. That is deliberate: an unpinned
 `uvx` would silently change the server underneath you between one launch and the
 next, and a plugin whose behaviour drifts without its version changing is
 untraceable when something breaks. New server versions arrive the same way
@@ -155,23 +163,31 @@ everything else does, by updating the plugin.
 
 ## Differences from the Windows plugin
 
-| | `grp-mcp` (Windows) | `grp-mcp-mac` |
+As of 0.81.0-rc15, **none that matter.** Both plugins run
+`uvx --from grp-mcp-plugin[search]==<version> grp-mcp`, need `uv`, and open the
+config page with `grp-mcp-setup`. The only remaining difference is where the
+config file lands — `%USERPROFILE%\grp-mcp\connections.json` on Windows,
+`~/.grp-mcp/connections.json` here.
+
+**What it used to look like, and why the split ended:**
+
+| | `grp-mcp` up to rc14 | both, from rc15 |
 | --- | --- | --- |
 | How it starts | bundled `grp-mcp.exe` | `uvx` fetches the wheel from PyPI |
 | Extra prerequisite | none | `uv` |
 | Config page | `grp-mcp.exe --setup` | `uvx --from grp-mcp-plugin==<version> grp-mcp-setup` |
-| Config file | `%USERPROFILE%\grp-mcp\connections.json` | `~/.grp-mcp/connections.json` |
-| Very first launch | instant | a few seconds, once, while `uv` downloads the wheel |
-| Every launch after | ~1.6 s, steady | ~1.2 s median, more variable |
+| `find_tool` | unavailable — built without `fastembed` | works |
+| Repo cost per release | 23 MB, re-downloaded on every update | none |
+| Every launch | ~1.6 s, steady | ~1.2 s median, more variable |
 
-**The Mac route is not slower in normal use.** Measured 2026-09-03, five launches
+**Dropping the binary did not cost speed.** Measured 2026-09-03, five launches
 each, start to a completed MCP handshake: the `.exe` took 1.63 s at the median
 and the `uvx` wheel 1.23 s. The bundled binary is a PyInstaller one-file build,
 so it unpacks itself to a temporary directory on *every* start, while `uvx` runs
-from an environment already on disk. Windows is steadier (1.63–1.70 s) and macOS
-quicker but more variable (1.23–2.60 s). Only the first launch, which downloads,
-is meaningfully slower. Worth stating because the bundled-installer version is
-naturally assumed to be the faster one, and it is not.
+from an environment already on disk. Windows was steadier (1.63–1.70 s) and
+macOS quicker but more variable (1.23–2.60 s). Only the first launch, which
+downloads, is meaningfully slower. Worth stating because the bundled-installer
+version is naturally assumed to be the faster one, and it was not.
 
 Everything above the launch mechanism — the tools, the gates, the write
 verification, the KB preflight — is the same code.

@@ -25,16 +25,18 @@ Acumatica's APIs. Claude talks to **your** instance directly; nothing is proxied
 and your credentials never leave your machine.
 
 **Needs your Acumatica credentials.** Writes are off per profile until you turn
-them on. Carries its own Python, so there is nothing else to install. Seven
-steps, about fifteen minutes.
+them on. Needs `uv` — one `winget install astral-sh.uv` — and no Python of your
+own. Seven steps, about fifteen minutes.
 
 → **[INSTALL-grp-mcp.md](INSTALL-grp-mcp.md)**
 
-### On a Mac or Linux? — `grp-mcp-mac`
+### On a Mac or Linux? — `grp-mcp`
 
-`grp-mcp` bundles a Windows binary, so on macOS it installs and then never
-starts. `grp-mcp-mac` is the same server run from PyPI instead. One extra
-prerequisite, `uv`; everything else is identical.
+The same plugin. It used to bundle a Windows binary, so on macOS it installed
+and then never started, and `grp-mcp-mac` existed to work around that. As of
+0.81.0-rc15 both run the same line and the split has no purpose left —
+`grp-mcp-mac` stays published only so anyone already on it keeps getting
+updates.
 
 **Install one or the other, never both.**
 
@@ -64,9 +66,11 @@ out — but it is why you will see two names for one secret.
 - **Access to the private `censof-tools` GitHub repository.** If you cannot open
   <https://github.com/Arvindh95Censof/censof-tools> in a browser, stop and
   request access — nothing here will work without it.
-- **Windows 10 or 11** for `grp-mcp` — it bundles a Windows binary. On macOS or
-  Linux use **`grp-mcp-mac`** instead, which needs `uv`.
-  `censof-mcp` runs anywhere Claude Code does.
+- **[`uv`](https://docs.astral.sh/uv/)** for `grp-mcp` — `winget install
+  astral-sh.uv` on Windows, `brew install uv` on a Mac. It fetches and runs the
+  Acumatica server in its own isolated environment; you do not need Python.
+  `censof-mcp` needs none of this — it calls a hosted service and runs anywhere
+  Claude Code does.
 - **On macOS, install from the CLI.** The app's **Add marketplace** button
   registers the marketplace and then stops without installing the plugin — the
   app logs `Found 0 local plugins` while the marketplace sits there cloned.
@@ -90,7 +94,7 @@ out — but it is why you will see two names for one secret.
 | [CHANGELOG.md](CHANGELOG.md) | What changed in each release, and what you will notice. |
 | [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Symptom → cause → fix. |
 | `tools\Set-KB-Token.cmd` | Stores your `grpkb_` token under both variable names, without it appearing on a command line. **Either plugin.** |
-| `tools\Edit-Connections.cmd` | Opens the Acumatica config page. Finds the installed binary for you. **`grp-mcp` only.** |
+| `tools\Edit-Connections.cmd` | Opens the Acumatica config page. Works out how the plugin starts the server and reuses that. **`grp-mcp` only.** |
 | `templates\` | Example `connections.json` and `kb_server.json`, if you would rather write them by hand. |
 
 > **Handing this to Claude?** Give it the **folder**, not a shared link — the

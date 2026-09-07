@@ -3,12 +3,15 @@ setlocal enabledelayedexpansion
 title GRP MCP - Edit Connections
 
 rem ---------------------------------------------------------------------------
-rem Opens the GRP MCP config page using the copy of grp-mcp.exe that the plugin
-rem already installed, pointed at the connections.json the SERVER actually uses.
+rem Opens the GRP MCP config page, pointed at the connections.json the SERVER
+rem actually uses.
 rem
-rem Why a launcher: the binary lives at a ~90-character path that people mistype,
-rem and the cache copy carries the VERSION in it, so any path written into a
-rem document breaks at the next release. This finds it instead.
+rem Why a launcher: nothing about how the server starts is stable enough to write
+rem into a document. It used to be a binary at a ~90-character path that people
+rem mistyped, in a cache folder carrying the VERSION. As of 0.81.0rc15 it is not a
+rem binary at all -- the plugin runs the server from PyPI through uvx, and the
+rem version is pinned inside the plugin's own .mcp.json. So this finds whichever
+rem of those is present rather than naming one.
 rem ---------------------------------------------------------------------------
 
 echo.
@@ -17,40 +20,98 @@ echo   ==========================
 echo.
 
 rem ===========================================================================
-rem 1. Find the binary.
+rem 1. Work out how to start the config page.
+rem
+rem uvx FIRST, when the plugin pins a version. That pin is the same string the
+rem MCP server is launched with, so the config page is guaranteed to be the same
+rem build as the server -- which the old exe-first order could not promise: after
+rem an update the marketplace clone has no binary but a PREVIOUS version's cache
+rem folder still does, and that stale exe would have won.
 rem ===========================================================================
 
 set "EXE="
+set "PIN="
+set "MODE="
 
-rem 1a. The marketplace clone. Preferred: no version in the path, so it survives
-rem     upgrades.
-set "MP=%USERPROFILE%\.claude\plugins\marketplaces\censof-tools\plugins\grp-mcp\server\grp-mcp.exe"
-if exist "%MP%" set "EXE=%MP%"
+rem 1a. The pinned version, read out of the plugin's own .mcp.json. Both plugin
+rem     names are checked: grp-mcp-mac is the same package under an older name.
+rem
+rem     The pin is pulled by stripping quotes, commas and spaces off the matched
+rem     line rather than by splitting on the quote character. `delims="` inside a
+rem     quoted for /f options string is a syntax error -- measured, not assumed:
+rem     it exits 255 with "The syntax of the command is incorrect."
+for %%J in (
+  "%USERPROFILE%\.claude\plugins\marketplaces\censof-tools\plugins\grp-mcp\.mcp.json"
+  "%USERPROFILE%\.claude\plugins\marketplaces\censof-tools\plugins\grp-mcp-mac\.mcp.json"
+) do (
+  if not defined PIN if exist "%%~J" call :readpin "%%~J"
+)
 
-rem 1b. The installed cache copy. Sorted NEWEST-DATE first, not by name: the
-rem     names are rc9, rc10, rc11, rc12 and a NAME sort puts rc9 on top, which
-rem     would launch the oldest build on any machine that has more than one.
-if not defined EXE (
-  for /f "delims=" %%D in ('dir /b /a:d /o-d "%USERPROFILE%\.claude\plugins\cache\censof-tools\grp-mcp" 2^>nul') do (
-    if not defined EXE if exist "%USERPROFILE%\.claude\plugins\cache\censof-tools\grp-mcp\%%D\server\grp-mcp.exe" (
-      set "EXE=%USERPROFILE%\.claude\plugins\cache\censof-tools\grp-mcp\%%D\server\grp-mcp.exe"
+rem 1b. Not in the clone: look in the installed cache. Sorted NEWEST-DATE first,
+rem     not by name -- the names are rc9, rc10, rc14, rc15 and a NAME sort puts
+rem     rc9 on top, which would pick the oldest build on any machine with more
+rem     than one.
+if not defined PIN (
+  for %%N in (grp-mcp grp-mcp-mac) do (
+    for /f "delims=" %%D in ('dir /b /a:d /o-d "%USERPROFILE%\.claude\plugins\cache\censof-tools\%%N" 2^>nul') do (
+      if not defined PIN if exist "%USERPROFILE%\.claude\plugins\cache\censof-tools\%%N\%%D\.mcp.json" (
+        call :readpin "%USERPROFILE%\.claude\plugins\cache\censof-tools\%%N\%%D\.mcp.json"
+      )
     )
   )
 )
 
-rem 1c. The Claude Desktop extension, if that is how it was installed instead.
-if not defined EXE (
-  set "EXT=%APPDATA%\Claude\Claude Extensions\local.mcpb.Censof.grp-mcp\server\grp-mcp.exe"
-  if exist "!EXT!" set "EXE=!EXT!"
+if defined PIN (
+  where uvx >nul 2>nul
+  if errorlevel 1 (
+    echo   The plugin is installed and pins:
+    echo       !PIN!
+    echo   but uv is not on this machine, so nothing can run it.
+    echo.
+    echo   Install it once, then reopen this window:
+    echo.
+    echo       winget install astral-sh.uv
+    echo.
+    echo   Reopening matters - the installer adds a folder to PATH and an
+    echo   already-open window will not see it.
+    echo.
+    pause
+    exit /b 1
+  )
+  set "MODE=uvx"
 )
 
-rem 1d. The standalone setup binary, if it was placed beside this file.
-if not defined EXE if exist "%~dp0GRP-MCP-Setup.exe" (
+rem 1c. LEGACY: a bundled binary from 0.81.0rc14 or earlier. Still honoured so a
+rem     machine that has not updated yet keeps working.
+if not defined MODE (
+  set "MP=%USERPROFILE%\.claude\plugins\marketplaces\censof-tools\plugins\grp-mcp\server\grp-mcp.exe"
+  if exist "!MP!" set "EXE=!MP!"
+
+  if not defined EXE (
+    for /f "delims=" %%D in ('dir /b /a:d /o-d "%USERPROFILE%\.claude\plugins\cache\censof-tools\grp-mcp" 2^>nul') do (
+      if not defined EXE if exist "%USERPROFILE%\.claude\plugins\cache\censof-tools\grp-mcp\%%D\server\grp-mcp.exe" (
+        set "EXE=%USERPROFILE%\.claude\plugins\cache\censof-tools\grp-mcp\%%D\server\grp-mcp.exe"
+      )
+    )
+  )
+
+  rem The Claude Desktop extension, if that is how it was installed instead.
+  if not defined EXE (
+    set "EXT=%APPDATA%\Claude\Claude Extensions\local.mcpb.Censof.grp-mcp\server\grp-mcp.exe"
+    if exist "!EXT!" set "EXE=!EXT!"
+  )
+
+  if defined EXE set "MODE=exe"
+)
+
+rem 1d. The standalone setup binary, if it was placed beside this file. This is
+rem     the route for creating a connections.json BEFORE anything is installed.
+if not defined MODE if exist "%~dp0GRP-MCP-Setup.exe" (
   set "EXE=%~dp0GRP-MCP-Setup.exe"
-  set "STANDALONE=1"
+  set "MODE=standalone"
 )
 
-if not defined EXE (
+if not defined MODE (
   echo   Could not find GRP MCP on this machine.
   echo.
   echo   Install the plugin first - see INSTALL-grp-mcp.md, Step 3. If you need to
@@ -139,7 +200,11 @@ rem the "other" file is THE SAME FILE under a second name.
 set "OTHER="
 if /i not "%CFG%"=="%PLAIN%" if exist "%PLAIN%" set "OTHER=%PLAIN%"
 
-echo   Using   : %EXE%
+if "%MODE%"=="uvx" (
+  echo   Using   : uvx --from !PIN! grp-mcp-setup
+) else (
+  echo   Using   : !EXE!
+)
 echo   Config  : %CFG%
 echo             %CFGWHY%
 echo.
@@ -158,8 +223,8 @@ if defined LEGACY (
 if "%CFGWHY:~0,9%"=="first run" (
   echo   ONE-TIME STEP, and it matters. This window sets GRP_MCP_CONNECTIONS for
   echo   the config page only. The MCP server is started by Claude, not by this
-  echo   script, so it will not see it - and a plugin binary older than 0.81.0rc14
-  echo   still looks under AppData by default. Run this once, then restart Claude:
+  echo   script, so it will not see it - and a plugin older than 0.81.0rc14 still
+  echo   looks under AppData by default. Run this once, then restart Claude:
   echo.
   echo       setx GRP_MCP_CONNECTIONS "%CFG%"
   echo.
@@ -172,16 +237,52 @@ if defined OTHER (
   echo         anything, because on some setups both paths reach the same file.
   echo.
 )
+if "%MODE%"=="uvx" (
+  echo   First run downloads the package - allow a minute. Later runs are instant.
+  echo.
+)
 echo   Your browser will open on http://127.0.0.1:8765
 echo   Add your instance, click Save, then CLOSE THIS WINDOW and restart Claude.
 echo.
 
-if defined STANDALONE (
-  "%EXE%"
+if "%MODE%"=="uvx" (
+  uvx --from "!PIN!" grp-mcp-setup
+) else if "%MODE%"=="standalone" (
+  "!EXE!"
 ) else (
-  "%EXE%" --setup
+  "!EXE!" --setup
 )
 
 echo.
 echo   Config page stopped.
 pause
+exit /b 0
+
+rem ---------------------------------------------------------------------------
+rem :readpin <path to a plugin .mcp.json>   ->   sets PIN, or leaves it unset
+rem
+rem Pulls "grp-mcp-plugin[search]==<version>" out of the args array, using a real
+rem JSON parser rather than string surgery. Both were tried. findstr plus
+rem character-stripping works only while the file is pretty-printed one array
+rem element per line: run against an installed cache copy, which writes
+rem   "args": ["--from", "grp-mcp-plugin==0.81.0rc14", "grp-mcp"],
+rem on one line, it yielded the pin "--fromgrp-mcp-plugin==0.81.0rc14grp-mcp" and
+rem the script cheerfully offered to run it. Claude Code writes that file, so its
+rem formatting is not ours to depend on.
+rem
+rem The path travels by environment variable, not inside the quoted -Command
+rem string: a profile path containing an apostrophe would otherwise end the
+rem PowerShell string literal early.
+rem ---------------------------------------------------------------------------
+:readpin
+set "PINJSON=%~1"
+set "RAW="
+rem The pipes are NOT caret-escaped. Inside a double-quoted string cmd treats ^
+rem as a literal character, so "a ^| b" hands PowerShell "^|" and it throws --
+rem which the catch swallowed, leaving PIN unset and the script silently falling
+rem back to a stale bundled .exe. Quoting already protects them from cmd.
+for /f "usebackq delims=" %%V in (`powershell -NoProfile -ExecutionPolicy Bypass -Command "try{(Get-Content -Raw -LiteralPath $env:PINJSON | ConvertFrom-Json).mcpServers.'grp-mcp'.args | Where-Object{$_ -like 'grp-mcp-plugin*'} | Select-Object -First 1}catch{}" 2^>nul`) do set "RAW=%%V"
+set "PINJSON="
+if not defined RAW exit /b 0
+set "PIN=%RAW%"
+exit /b 0

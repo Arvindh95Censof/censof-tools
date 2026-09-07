@@ -80,6 +80,44 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc15 · 7 Sep 2026
+
+**`grp-mcp` no longer ships a Windows binary, and now needs `uv` like the Mac one
+does.** One new step, once:
+
+```powershell
+winget install astral-sh.uv
+```
+
+Then reopen PowerShell — the installer adds a folder to your PATH and an
+already-open window will not see it.
+
+**What this buys you: `find_tool` works.** It is the tool that finds the right
+one of 120 from a description of what you want, and on Windows it had never once
+run. The bundled `.exe` was built with its search library deliberately excluded
+to keep the download to 23 MB, so every Windows install has been answering
+*"fastembed not installed"* since the feature shipped. Putting the library back
+in the binary would have taken the download to roughly 120 MB — re-downloaded in
+full on **every** update, because the marketplace clone is shallow. Running from
+PyPI costs one `winget` line instead, and starts measurably faster: 1.23 s to a
+completed handshake against the binary's 1.63 s.
+
+**`grp-mcp-mac` is superseded.** It only ever existed because a Mac cannot
+execute a Windows `.exe`. Both plugins now run the identical line, so there is
+nothing left to choose between them. **You do not have to do anything** — it
+stays published and keeps updating. New installs should take `grp-mcp`.
+As before: install one or the other, never both.
+
+**Also fixed:** the Mac plugin's version pin had been asking for the package
+*without* its `[search]` extra, so `find_tool` reported itself unavailable there
+too. Both pins now include it. And `Edit-Connections.cmd` reads the version the
+plugin pins straight out of its own `.mcp.json` rather than looking for a binary,
+so the config page cannot be a different build from the server it is configuring.
+
+**First launch after updating is slow** — a minute or so while `uv` fetches the
+server. Once. The first `find_tool` then downloads its embedding model (~210 MB),
+also once, after which it runs offline. Everything else works meanwhile.
+
 ### Both Acumatica plugins at 0.81.0-rc14 · 4 Sep 2026
 
 The Windows binary was rebuilt so it actually carries the location fix below —

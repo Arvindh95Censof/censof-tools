@@ -5,20 +5,27 @@
 Double-click it. Opens the config page in your browser so you can add or change
 your Acumatica connection, and the knowledge-base settings.
 
-It finds the copy of the program the plugin already installed, so there is
-nothing to download and no path to type. It looks in this order:
+It works out how the plugin starts the server and reuses exactly that, so there
+is no path to type and no chance of configuring one build while a different one
+runs. It looks in this order:
 
-1. the marketplace clone — preferred, because its path has no version in it and
-   so survives upgrades
-2. the installed plugin cache — versioned, newest wins
+1. the version the plugin pins, read out of its own `.mcp.json` — in the
+   marketplace clone first, then the installed cache. This is what the MCP
+   server itself is launched with, so the config page cannot disagree with it.
+   Needs `uv`; if the pin is there and `uv` is not, it says so and gives you the
+   `winget` line rather than failing obscurely
+2. a bundled `grp-mcp.exe` from 0.81.0-rc14 or earlier, if this machine has not
+   updated yet
 3. the Claude Desktop extension, if that is how it was installed
 4. `GRP-MCP-Setup.exe` beside this file, if someone put one there
 
 If it finds nothing it says so and points you at INSTALL-grp-mcp.md rather than failing
 with a path error.
 
-Your settings save to `%LOCALAPPDATA%\grp-mcp\connections.json` — where the
-plugin looks on its own. **Restart Claude afterwards.**
+Your settings save to `%USERPROFILE%\grp-mcp\connections.json` — where the
+plugin looks on its own. Not `%LOCALAPPDATA%`: Claude installs as an MSIX
+package, so a server it launches sees that folder redirected into the package's
+`LocalCache`, and an app update empties it. **Restart Claude afterwards.**
 
 ---
 
@@ -50,12 +57,12 @@ can be double-clicked, since a `.ps1` opens in Notepad by default.
 
 A standalone copy of the same config page, carrying its own Python. It is **not**
 shipped here: it is 21 MB, and `Edit-Connections.cmd` above does the same job
-using the copy the plugin already installed.
+through `uv`.
 
 You only need it to create a `connections.json` on a machine where **nothing is
-installed yet** — preparing a config centrally to hand to someone, for instance.
-Ask whoever maintains these tools for it; drop it beside `Edit-Connections.cmd`
-and the launcher will find it.
+installed yet and `uv` is not wanted** — preparing a config centrally to hand to
+someone, for instance. Ask whoever maintains these tools for it; drop it beside
+`Edit-Connections.cmd` and the launcher will find it.
 
 ---
 
@@ -68,4 +75,4 @@ full:
 | Instead of | Do this |
 | --- | --- |
 | `Set-KB-Token.cmd` | [INSTALL-censof-mcp.md](../INSTALL-censof-mcp.md) → *On macOS or Linux — setting the token by hand*. Read it rather than guessing: a shell profile does not reach an app launched from Finder, which fails as an auth error with a healthy-looking plugin. |
-| `Edit-Connections.cmd` | `uvx --from grp-mcp-plugin==0.81.0rc13 grp-mcp-setup` — see [INSTALL-grp-mcp-mac.md](../INSTALL-grp-mcp-mac.md) |
+| `Edit-Connections.cmd` | `uvx --from grp-mcp-plugin==0.81.0rc15 grp-mcp-setup` — see [INSTALL-grp-mcp-mac.md](../INSTALL-grp-mcp-mac.md) |

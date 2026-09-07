@@ -6,35 +6,60 @@ diagnose failures.
 Claude talks to **your** instance directly. Nothing is proxied through a server in
 the middle, and your credentials stay on your machine.
 
-This plugin carries its own Python runtime. You do not need Python installed.
+## Prerequisite — `uv`
+
+The plugin ships no binary. It runs the server from PyPI:
+
+```
+uvx --from grp-mcp-plugin[search]==0.81.0rc15 grp-mcp
+```
+
+So [`uv`](https://docs.astral.sh/uv/) has to be installed once:
+
+```
+winget install astral-sh.uv
+```
+
+Check it with `uv --version`, and **reopen your terminal** if it is not found —
+the installer adds `%USERPROFILE%\.local\bin` to PATH and open windows do not
+pick that up. Claude itself does: it passes your user PATH through to the
+plugin, verified on a running server.
+
+You do not need Python. `uv` fetches its own.
+
+> **This changed in rc15.** Until then this plugin carried a 23 MB
+> `server/grp-mcp.exe` and needed no prerequisite. That binary was built with
+> `fastembed` excluded, which left `find_tool` — semantic search over all 120
+> tools — permanently unavailable on Windows. Bundling `fastembed` instead would
+> have taken the binary to roughly 120 MB, re-downloaded on every single update
+> because marketplace clones are shallow. Running from PyPI costs one `winget`
+> line and fixes it.
 
 ## Setup — run it once
 
-The plugin needs a `connections.json` holding your Acumatica instance and its
-credentials. The plugin can create it for you. In PowerShell:
+The server needs a `connections.json` holding your Acumatica instance and its
+credentials. It can create one for you:
 
 ```
-& "$env:USERPROFILE\.claude\plugins\marketplaces\censof-tools\plugins\grp-mcp\server\grp-mcp.exe" --setup
+uvx --from grp-mcp-plugin==0.81.0rc15 grp-mcp-setup
 ```
 
 That opens a config page in your browser. Add your instance, save, close the
-window, and restart Claude. The file lands in `%LOCALAPPDATA%\grp-mcp\` and the
+window, and restart Claude. The file lands in `%USERPROFILE%\grp-mcp\` and the
 server looks there on its own — **there is no environment variable to set.**
 
-If the command reports the path was not found, the plugin is installed but the
-marketplace clone has moved. Find the binary with:
-
-```
-Get-ChildItem "$env:USERPROFILE\.claude\plugins" -Recurse -Filter grp-mcp.exe | Select-Object -First 1 -ExpandProperty FullName
-```
+`%USERPROFILE%` rather than `%LOCALAPPDATA%` is deliberate. Claude installs as an
+MSIX package, so processes it launches see `%LOCALAPPDATA%` redirected into the
+package's `LocalCache` — and an app update empties that folder. Connection
+profiles have been lost that way.
 
 Already have a `connections.json` from someone else? Drop it in
-`%LOCALAPPDATA%\grp-mcp\` and skip the setup step. **Keep it out of OneDrive or
+`%USERPROFILE%\grp-mcp\` and skip the setup step. **Keep it out of OneDrive or
 Dropbox** — it holds ERP passwords in clear text.
 
 ### Optional
 
-Only if your config lives somewhere other than `%LOCALAPPDATA%\grp-mcp\`:
+Only if your config lives somewhere other than `%USERPROFILE%\grp-mcp\`:
 
 | Variable | Default | What it does |
 |---|---|---|
@@ -54,11 +79,23 @@ Writes are read back and compared against what was sent; anything that cannot be
 confirmed is reported as **unverified** rather than as success. Nothing is ever
 rolled back automatically.
 
-## First call after starting Claude is slower
+## The first launch is slow, once
 
-The server is a single self-contained executable, so it unpacks itself to a temp
-folder on each launch — expect roughly five seconds before the first tool
-answers. That happens once per Claude session, not per tool call.
+`uvx` downloads the wheel and its dependencies the first time, then caches them —
+later launches start in about a second. The first `find_tool` call additionally
+downloads its embedding model (~210 MB) once; after that it runs fully offline.
+Everything else works while that is happening.
+
+## Why the version is pinned
+
+`--from grp-mcp-plugin[search]==0.81.0rc15` names an exact version on purpose.
+Unpinned, `uvx` would fetch whatever is newest at each launch, so the server
+could change underneath you between one start and the next while the plugin
+version stayed the same — untraceable the moment something breaks. New server
+versions arrive by updating the plugin, like everything else.
+
+`[search]` is the extra that installs `fastembed`. Without it the server still
+runs and every tool still works; only `find_tool` reports itself unavailable.
 
 ## Check it works
 

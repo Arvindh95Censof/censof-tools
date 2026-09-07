@@ -1,10 +1,12 @@
 # GRP MCP — installation, step by step
 
-> **Windows only.** This plugin bundles `server/grp-mcp.exe`. On macOS or Linux
-> it installs cleanly and then never starts — no error, no Acumatica tools,
-> nothing naming the cause. Use **[`grp-mcp-mac`](INSTALL-grp-mcp-mac.md)**
-> instead, which runs the same server from PyPI. Install one or the other, never
-> both.
+> **Written for Windows**, but the plugin itself runs anywhere as of
+> 0.81.0-rc15. On macOS or Linux follow
+> **[INSTALL-grp-mcp-mac.md](INSTALL-grp-mcp-mac.md)**, which is these same steps
+> with `brew install uv` in place of the `winget` lines.
+>
+> Until rc15 this plugin bundled `server/grp-mcp.exe` and genuinely was Windows
+> only. It no longer ships a binary.
 
 From nothing installed to Claude answering `whoami` against your Acumatica
 instance. Allow about fifteen minutes the first time.
@@ -15,7 +17,7 @@ Every step tells you **what to expect**, so you can tell success from
 **Contents**
 
 - [Step 0 — Check you can get the software](#step-0--check-you-can-get-the-software)
-- [Step 1 — Install the Claude Code CLI](#step-1--install-the-claude-code-cli)
+- [Step 1 — Install the Claude Code CLI and `uv`](#step-1--install-the-claude-code-cli-and-uv)
 - [Step 2 — Add the marketplace](#step-2--add-the-marketplace)
 - [Step 3 — Install the plugin](#step-3--install-the-plugin)
 - [Step 4 — What you need from Acumatica](#step-4--what-you-need-from-acumatica)
@@ -47,7 +49,7 @@ time it needs to.
 
 ---
 
-## Step 1 — Install the Claude Code CLI
+## Step 1 — Install the Claude Code CLI and `uv`
 
 **Install this even if you only use the Claude Code desktop app.** The `claude`
 command is the only working way to install and update the plugin
@@ -71,6 +73,34 @@ claude --version
 
 **Expect:** a version number. If you get "not recognized", reopen PowerShell; if
 it still fails, sign out of Windows and back in.
+
+### And `uv`
+
+The plugin ships no program of its own — it runs the Acumatica server from PyPI,
+and [`uv`](https://docs.astral.sh/uv/) is what fetches and runs it.
+
+```powershell
+winget install astral-sh.uv
+```
+
+**Close and reopen PowerShell again**, then check:
+
+```powershell
+uv --version
+```
+
+**Expect:** something like `uv 0.8.0`. If it is not found, the installer added
+`%USERPROFILE%\.local\bin` to your PATH and the open window has not picked it up.
+
+You do **not** need Python. `uv` brings its own.
+
+> **Why this step exists now.** Up to 0.81.0-rc14 the plugin carried a 23 MB
+> `grp-mcp.exe` and there was nothing to install. That binary was built without
+> `fastembed`, which left `find_tool` — the search that finds the right tool out
+> of 120 by describing what you want — permanently unavailable on Windows.
+> Including `fastembed` would have taken the download to roughly 120 MB, and you
+> would re-download all of it on every update. One `winget` line was the better
+> trade.
 
 > **Which app gets the plugin.** Claude Code has two faces — the desktop app and
 > the terminal — and they share one plugin store at `%USERPROFILE%\.claude\plugins`.
@@ -125,8 +155,9 @@ It installs at **user scope**, into `%USERPROFILE%\.claude\plugins`. Both the
 Claude Code desktop app and the terminal read that same location, so this one
 command serves both.
 
-This downloads about 23 MB — the server plus its own bundled Python runtime.
-There is nothing else to install.
+This downloads a few kilobytes — the plugin is only its configuration. The
+server itself is fetched by `uv` the first time Claude starts it, which takes
+about a minute and happens once.
 
 Confirm:
 
@@ -134,7 +165,7 @@ Confirm:
 claude plugin list
 ```
 
-**Expect:** `grp-mcp@censof-tools` with a version like `0.81.0-rc12`.
+**Expect:** `grp-mcp@censof-tools` with a version like `0.81.0-rc15`.
 
 > **Also available:** `censof-mcp` in the same marketplace searches the GRP
 > knowledge base — closed RFS tickets, Acumatica documentation and the GRP
@@ -276,7 +307,7 @@ Then ask Claude:
 
 ```json
 {
-  "grp_mcp_version": "0.81.0rc12",
+  "grp_mcp_version": "0.81.0rc15",
   "instance": "staging",
   "tenant": "MyCompany 270326",
   "base_url": "https://acumatica.example.com/MyCompany",
@@ -420,14 +451,17 @@ state and is worse than not checking at all, because it looks like a check.
   state, not a broken install.
 - **`variable_is_set: false` right after setting `KB_TOKEN`** means only that
   Claude Code has not been restarted since. It is not a wrong token.
-- **The first tool call taking ~5 seconds** is the onefile binary unpacking. Once
-  per session.
+- **A slow first launch** is `uv` downloading the server. Once per version, not
+  per session. A slow first `find_tool` is its embedding model (~210 MB),
+  downloaded once and then used offline.
 
 ## Getting it wrong in ways that cost real time
 
-- **Do not suggest `pip install grp-mcp`.** That installs a *second* copy from
-  PyPI, at an older published version, and the two fight over Acumatica licence
-  seats. The plugin carries its own Python; nothing needs installing.
+- **Do not suggest `pip install grp-mcp`.** The plugin already runs the package
+  from PyPI, at a version it pins on purpose. A `pip install` adds a *second*
+  copy at a different version, into whichever Python happens to be on PATH, and
+  the two fight over Acumatica licence seats. `uv` is the only install anyone
+  needs.
 - **Check `whoami` before any write.** A profile switch is invisible in the
   transcript, and several profiles in one file routinely point at different
   customers. Writes are also gated per profile — if one is refused, point at
