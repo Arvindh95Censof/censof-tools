@@ -80,6 +80,44 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc19 · 7 Sep 2026
+
+**When Acumatica refuses something, you now get the reason first.**
+
+Acumatica explains a refusal in a way that buries the useful sentence. A failed
+read used to come back looking like this, and the part you needed was about two
+hundred characters in, after a constant phrase, a .NET type name and a stack
+trace from Acumatica's own build machine:
+
+```
+GET .../Customer -> 500: {"message":"An error has occurred.","exceptionMessage":
+"The required configuration data is not entered on the Account Receivable
+Preferences form.","exceptionType":"PX.Data.PXSetupNotEnteredException`1[[...
+```
+
+Now the cause leads:
+
+```
+GET .../Customer -> 500: The required configuration data is not entered on the
+Account Receivable Preferences form. [PXSetupNotEnteredException: ARSetup] | {...}
+```
+
+The seat-limit failure got the same treatment — it arrives as a styled web page
+whose entire message is the title, so you now see **API Login Limit** instead of
+a doctype and a stylesheet.
+
+Nothing was removed. The original response is still there, in full, after the
+summary — several tools read it to decide whether to retry a different way, and
+shortening it would have broken them silently.
+
+Found while testing rc18 against a live instance: a read failed, and the message
+that came back named neither the cause nor the fix.
+
+```powershell
+claude plugin marketplace update censof-tools
+claude plugin update grp-mcp@censof-tools
+```
+
 ### Both Acumatica plugins at 0.81.0-rc18 · 7 Sep 2026
 
 **A small one, and worth saying so.** Nothing here changes what the plugin can do.
