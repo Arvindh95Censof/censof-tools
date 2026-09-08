@@ -80,6 +80,35 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc21 · 8 Sep 2026
+
+**A delete that did not happen can no longer be reported as confirmed.**
+
+After a delete, the tool checks the record is actually gone — Acumatica will
+refuse to delete a record that something else references, and it does that
+*without* reporting an error, so the check is the only thing standing between you
+and a false success.
+
+The problem was what happened when that check could not run. If the instance
+timed out, or returned an error, or the screen re-read came back unreadable,
+three separate code paths treated the silence as proof the record was gone. You
+were told the delete was confirmed. Delete is the one thing here with no undo,
+so a wrong "confirmed" is the worst possible place for this.
+
+You now get **unverified**, plus a line saying which half failed — the delete
+itself reported success, it is the confirmation that could not run. That matters,
+because "unproven" and "doubtful" call for different reactions, and the message
+now tells you not to re-issue the delete on the strength of that verdict.
+
+Nothing changes when the check *does* run: a confirmed delete still says
+verified, and a record that survived still says SILENT NO-OP.
+
+**A failed knowledge-base lookup now says what actually went wrong.** If the KB
+server answered but its search failed, you were shown a JSON parsing error —
+which sent people looking for a formatting problem in their config file. The real
+explanation was already there and was being thrown away. You now see what the KB
+said.
+
 ### Both Acumatica plugins at 0.81.0-rc20 · 8 Sep 2026
 
 **Error messages actually reach you now.** This is the one to know about, because
