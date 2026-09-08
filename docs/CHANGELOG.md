@@ -80,6 +80,20 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc23 · 8 Sep 2026
+
+**Workgroups on the Company Tree can be moved.**
+
+Creating a workgroup and deleting one already worked. Moving an existing one did
+not — the Move button opens a picker dialog rather than acting on its own, so
+nothing happened. You can now move a workgroup under a different parent, or
+promote it back up to the top level.
+
+It refuses the moves that would leave you without a tree: a workgroup under
+itself, or under one of its own children. Moving one to where it already is does
+nothing rather than reporting a change. Either way the result is checked against
+the database afterwards, not taken from the screen.
+
 ### Both Acumatica plugins at 0.81.0-rc22 · 8 Sep 2026
 
 **Four tools that did nothing on Acumatica 2026 R1 work again.**
