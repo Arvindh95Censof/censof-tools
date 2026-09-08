@@ -80,6 +80,33 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc22 · 8 Sep 2026
+
+**Four tools that did nothing on Acumatica 2026 R1 work again.**
+
+Building a workgroup on the Company Tree, adding a member to one, building an
+approval map, and editing a step of an existing one all failed immediately on
+2026 R1. Each of them drove a page style that version removed — the screens are
+still there, but the older page behind them is not, so the tools could not even
+open them. Earlier Acumatica versions were never affected.
+
+They now choose the route per call: the current interface where that page is
+gone, the original route where it still exists. If you are on an earlier version
+nothing changes for you.
+
+Two things previously written down as limitations turn out not to be:
+
+- **Approval-map amount conditions work.** "This approver above RM10,000" can be
+  built again — the condition had been reported as added while landing nowhere.
+- **A multi-step approval map gets one approver per step.** The second step could
+  come out with no approver at all and its workgroup written onto the first step,
+  producing a map that looked complete and would not have routed correctly.
+
+Checked against a live 2026 R1 instance rather than assumed: a three-level
+workgroup tree with every parent correct, a member read back off the screen, a
+two-step approval map with an amount condition on each step, and an in-place step
+edit confirmed against the database.
+
 ### Both Acumatica plugins at 0.81.0-rc21 · 8 Sep 2026
 
 **A delete that did not happen can no longer be reported as confirmed.**
