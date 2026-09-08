@@ -69,6 +69,46 @@ something you can fix locally.
    claude plugin install grp-mcp@censof-tools
    ```
 
+### No Acumatica tools right after updating the plugin
+
+The symptom is the plugin failing to start, with Claude reporting the server
+connection closed. The cause is not the new version and not your install: `uv`
+caches its view of the package index, and if that cache was filled before the new
+version existed, `uv` cannot see it and refuses to run.
+
+To confirm it, run the plugin's own command by hand — the error only appears on
+stderr, which Claude does not show you:
+
+```powershell
+uvx --from grp-mcp-plugin==<the version your plugin pins> grp-mcp
+```
+
+If that is the problem you will see:
+
+```
+× No solution found when resolving tool dependencies:
+╰─▶ Because there is no version of grp-mcp-plugin==<version> and
+    you require grp-mcp-plugin==<version>, we can conclude that your
+    requirements are unsatisfiable.
+```
+
+Fix it once, then restart Claude:
+
+```powershell
+uvx --refresh --from grp-mcp-plugin==<the version your plugin pins> grp-mcp
+```
+
+It will print `Installed 37 packages` and then sit waiting for input — that is a
+working server. Press Ctrl+C; the cache is now correct and normal launches work.
+`uv cache clean grp-mcp-plugin` does the same job.
+
+**Waiting is not a reliable fix**, despite what an earlier note in the changelog
+suggested. This is `uv`'s cache on *your machine*, not a delay at PyPI: measured
+2026-09-08, the version was confirmed published — digests and all — several
+minutes before `uvx` still refused to see it, and `--refresh` fixed it instantly.
+Anyone who has used `uvx` recently is the most likely to hit this, because their
+cache is the freshest.
+
 ### The first tool call takes about five seconds
 
 Expected. The server is a single self-contained executable and unpacks itself to

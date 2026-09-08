@@ -114,6 +114,19 @@ order.
 
 ---
 
+## If the tools vanish right after updating
+
+Not a broken update. `uv` caches its view of the package index, so a version
+newer than that cache is invisible to it and the server refuses to start. Run
+this once and restart Claude:
+
+```powershell
+uvx --refresh --from grp-mcp-plugin==<the version your plugin pins> grp-mcp
+```
+
+Full symptom and explanation: [TROUBLESHOOTING.md](TROUBLESHOOTING.md) — "No
+Acumatica tools right after updating the plugin".
+
 ## Confirming the update actually took
 
 Two different things have to be true: the files on disk changed, and the
