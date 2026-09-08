@@ -80,6 +80,28 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc27 - 8 Sep 2026
+
+**Writes that succeeded stop being reported as unproven.**
+
+After any write, the server checks whether it actually landed and tells you the
+answer: confirmed, refused, or unproven. That label matters, because Acumatica
+will sometimes accept a change and quietly do nothing, and the check is what
+catches it.
+
+A bug meant some writes that HAD been fully checked were labelled unproven
+anyway, with a long note attached about how to investigate a failure that had not
+happened. Building a company tree was the clearest case: every workgroup was
+confirmed against the database, and you were still told nothing had been proven.
+
+The data was never wrong. The report about the data was wrong - which is worse
+than it sounds, because a label that cries wolf is one people learn to skip, and
+this is the label worth reading.
+
+Found by running the tools the way you run them, rather than from a test script.
+The mislabelling happened in a layer that only exists on the real call path, so
+nothing internal had ever shown it.
+
 ### Both Acumatica plugins at 0.81.0-rc26 - 8 Sep 2026
 
 **No change to what the tools do.** This one is worth taking anyway, but it is
