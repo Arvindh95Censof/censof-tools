@@ -80,6 +80,27 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc24 · 8 Sep 2026
+
+**Workgroups can be reordered within their branch.**
+
+Moving a workgroup up or down among its siblings changes the display order only —
+never which workgroup it sits under. Other branches are left alone.
+
+If you ask to move it further than there is room for, it moves as far as it can
+and says so. That matters more than it sounds: at the top or bottom of a branch
+the screen accepts the click and silently does nothing — no error, no message —
+so the honest answer has to be worked out beforehand rather than read back
+afterwards.
+
+Together with rc23's move, the Company Tree can now be built, staffed,
+rearranged and taken apart without opening the screen.
+
+One thing worth stating plainly, because it is easy to assume otherwise: **there
+is no undo.** Cancel discards changes you have not saved yet; nothing reverses a
+change already saved. A reorder is undone by reordering back, and a deletion is
+not undone at all.
+
 ### Both Acumatica plugins at 0.81.0-rc23 · 8 Sep 2026
 
 **Workgroups on the Company Tree can be moved.**
