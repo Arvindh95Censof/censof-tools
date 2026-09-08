@@ -102,6 +102,21 @@ It will print `Installed 37 packages` and then sit waiting for input — that is
 working server. Press Ctrl+C; the cache is now correct and normal launches work.
 `uv cache clean grp-mcp-plugin` does the same job.
 
+**A restart does not always retry.** Once a server has failed to launch, Claude
+remembers that for about 15 minutes and skips it — so you can fix the real
+problem, restart, and see the tools still missing, which looks exactly like the
+fix not working. Claude reports this as *"Skipping connection (recent failure
+cached, retries automatically in 15 min, or edit the plugin config to retry
+now)"*. Either wait it out, or touch the installed config to clear it:
+
+```powershell
+(Get-Item "$env:USERPROFILE\.claude\plugins\cache\censof-tools\grp-mcp\<version>\.mcp.json").LastWriteTime = Get-Date
+```
+
+Then restart. Two caches in a row — `uv`'s and Claude's — is what makes this
+confusing: neither says why, and fixing the first does nothing visible until the
+second expires.
+
 **Waiting is not a reliable fix**, despite what an earlier note in the changelog
 suggested. This is `uv`'s cache on *your machine*, not a delay at PyPI: measured
 2026-09-08, the version was confirmed published — digests and all — several
