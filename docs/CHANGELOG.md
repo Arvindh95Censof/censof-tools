@@ -80,6 +80,33 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc25 - 8 Sep 2026
+
+**An approval map can be changed instead of rebuilt.**
+
+Until now a map was fixed once created: its steps, and the amount limits on them.
+Raising a threshold from 10,000 to 25,000 meant deleting the map and building it
+again from scratch. That is the change a live approval matrix needs most often,
+because limits get renegotiated while everything else stays the same.
+
+Three things you can now do to a map that already exists:
+
+- **Change the amount bands on a rule.** Give it the full set of limits you want
+  and it works out the difference.
+- **Add a step**, with the workgroup that approves it and optionally its own
+  limits. It is added at the end of the sequence.
+- **Remove a step or a single approver.** Removing a step takes its approvers with
+  it; removing just an approver leaves the step in place.
+
+Two of these do quiet extra work so that the result is what you asked for. A new
+step genuinely ends up last, rather than landing in the middle because of how the
+screen numbers things. And when limits change, a rule is never briefly left with
+none - which matters, because a rule with no limit matches every document, and
+for a moment everything would route through that approver.
+
+**There is still no undo.** Removing a step is permanent; it is rebuilt by adding
+it again, not recovered.
+
 ### Both Acumatica plugins at 0.81.0-rc24 · 8 Sep 2026
 
 **Workgroups can be reordered within their branch.**
