@@ -80,6 +80,27 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc26 - 8 Sep 2026
+
+**No change to what the tools do.** This one is worth taking anyway, but it is
+honest to say up front that nothing behaves differently.
+
+The server keeps a knowledge base and consults it on your behalf before every
+write - that is where the warnings and prerequisites attached to a write come
+from. This release adds a section to it, generalizing what a run of releases
+across the Company Tree and Approval Maps screens kept re-teaching.
+
+The most useful of those, if you ever read a result and wonder whether something
+is missing: **a screen answers with only what was asked for.** A grid that comes
+back empty, or a list showing one row where you expected several, very often
+means the question was incomplete rather than the data absent. Three times in one
+day that reading produced a wrong conclusion - twice deciding a command had done
+nothing when it had worked perfectly, and once treating an insert as successful
+when it had saved nothing at all.
+
+That reasoning now travels with the package instead of living only in the source
+repository, so the guidance you see attached to a write reflects it.
+
 ### Both Acumatica plugins at 0.81.0-rc25 - 8 Sep 2026
 
 **An approval map can be changed instead of rebuilt.**
