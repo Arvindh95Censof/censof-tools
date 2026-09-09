@@ -80,6 +80,36 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc28 - 9 Sep 2026
+
+**Adding a step to an existing approval map works again on older Acumatica
+builds.** On those builds it did not work at all - it stopped with a message
+saying nothing had been saved.
+
+That message was the worst part of it. The step *had* been created correctly.
+What failed was the tool reading its own work back afterwards: the screen
+answered that question with nothing at all, which is indistinguishable from
+"the map is empty", so the tool concluded it had failed and said so. Anyone
+following that advice would have gone looking for a problem that was not there,
+and might reasonably have built the map again from scratch.
+
+Only that one operation was affected. Building a map, changing its amount
+limits, removing a step, and everything on the Company Tree screen all worked on
+those builds throughout - which is why this went unnoticed: four of the five
+newest tools were fine.
+
+Found by running all five against a real older instance rather than the newest
+one, end to end, and cleaning up afterwards.
+
+**Also in this release, though you will not see it directly:** the server keeps
+a knowledge base and consults it on your behalf before every write. Because the
+bug above came from a finding that was recorded from one Acumatica version and
+read as though it were true of all of them, every claim in that knowledge base
+was re-checked against a live older instance. Most held unchanged. Three did
+not, and were corrected - including one that had been left explicitly
+unfinished, where the real answer turned out to affect roughly two thirds of
+screens rather than the single one it had been recorded against.
+
 ### Both Acumatica plugins at 0.81.0-rc27 - 8 Sep 2026
 
 **Writes that succeeded stop being reported as unproven.**
