@@ -80,6 +80,47 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc31 - 10 Sep 2026
+
+**The green Excel button on a table toolbar now works.** On older-style Acumatica
+screens, some tables carry a toolbar button that loads rows in from a .csv or
+.xlsx file. Driving that button through Claude had been *accepted* by Acumatica
+and then quietly written nothing - no error, no warning, a clean-looking result
+and an unchanged table.
+
+The cause was one piece of information a web browser fills in and a script does
+not. The page carries a hidden field describing the table, and the page itself
+always sends it empty; the browser fills it in a moment later from the screen
+running in front of you. Nothing readable off the page would ever show that
+value, which is why this took as long as it did - every response we got back
+matched a real browser's exactly, while the request was missing the one field
+that mattered.
+
+It is now sent, and the load works end to end: verified by importing rows,
+reading them back out of the database, and deleting them again. Checked against
+every screen we could find that offers the button.
+
+**A save is no longer lost when your session is taken over.** Acumatica ends your
+screen session if the same login is used again somewhere else - including by our
+own housekeeping, which frees up the small number of API seats an instance
+allows. A write refused for that reason is now retried once. The retry is
+deliberately narrow: it only happens when we can confirm nothing was written, so
+a save that might have gone through is never sent twice.
+
+**One correction.** A note about a screen used for numbering setup said the
+screen could not be driven at all. It can - just not the way that was tried.
+Adding a new row there opens a dialog, and a request that ignores the dialog
+comes back reporting success over nothing at all. That is now recorded properly.
+
+**Worth recording, because it is the same lesson twice.** Eleven separate
+explanations for the file-load failure were tested and ruled out, every one of
+them against the same four saved requests. What actually found the answer was
+looking *wider* rather than closer - listing every request the screen makes,
+including several nobody had ever opened. Two of the ruled-out explanations had
+already been written down as fact by then; both were wrong, and both are now
+marked as such. A difference you can see is not automatically the difference
+that matters.
+
 ### Both Acumatica plugins at 0.81.0-rc30 - 10 Sep 2026
 
 **Guidance only - nothing about how the tools work has changed.** rc29 fixed
