@@ -80,6 +80,32 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc30 - 10 Sep 2026
+
+**Guidance only - nothing about how the tools work has changed.** rc29 fixed
+editing and deleting rows in tables on older-style Acumatica screens. This
+release fixes the explanations that still described the broken behaviour.
+
+Seven of them, and one was doing real harm: if you asked for a table by a name
+the screen did not recognise, the tool concluded the table could only be edited
+a different way and sent you off down that road. The real cause was almost
+always just the name - these screens have an internal name for each table that
+is not always the one shown elsewhere. It now lists the names that screen
+actually has, so a wrong guess costs one attempt instead of a wrong conclusion.
+
+Also fixed: two tools never explained that setting at all; one screen was being
+held up as the standard example of something it demonstrably is not; and the
+advice for a table that asks "are you sure?" described a leftover state that no
+longer happens.
+
+**Worth recording, because it explains the seven weeks.** The note that had to
+be rewritten here turned out to have recorded rc29's fix correctly back in July.
+It identified the exact missing step. It was then filed as applying only to one
+narrow kind of screen - and on every other kind the same problem was failing
+silently, so nothing ever contradicted it. The answer sat there, correct and
+shelved, while the underlying bug went unnoticed. The note now carries that
+lesson rather than the limitation.
+
 ### Both Acumatica plugins at 0.81.0-rc29 - 10 Sep 2026
 
 **Editing or deleting a row in a table now actually saves it.** On older-style
