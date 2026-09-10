@@ -80,6 +80,49 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc29 - 10 Sep 2026
+
+**Editing or deleting a row in a table now actually saves it.** On older-style
+Acumatica screens it had been going through the motions: the tool reported
+success, and nothing reached the database.
+
+Those screens need two steps - prepare the change, then save it - and only the
+first was ever sent. Every edit and every delete of a table row on that kind of
+screen was affected.
+
+It stayed hidden this long because a change that has been prepared but not saved
+looks identical to a change that was never needed: no error, a clean-looking
+response, the right number of rows. Worse, because the symptom showed up
+everywhere, it kept being written down as a limitation of whichever screen
+happened to be in front of us at the time. Three such notes turn out to have
+been describing this one missing step. The most misleading of them said a
+particular family of screens simply could not be edited this way; they can, and
+now do.
+
+**Checked properly this time.** Five genuinely different kinds of table were
+driven end to end against a live system - simple ones, ones with multi-part row
+identifiers, one where the table IS the screen, one that asks "are you sure?"
+before deleting, and one tucked inside a tab. Every result was confirmed by
+reading the database back, not by believing the tool.
+
+**Four smaller problems surfaced during that testing and are fixed too:**
+
+- Asking for a table by name could fail with no way forward, because the name
+  the tool wanted was not the one it had shown you. It now lists the names that
+  screen actually has.
+- If a screen asked for confirmation and none was given, the half-finished edit
+  was left sitting there and interfered with whatever you did next - including
+  the retry the tool itself suggested.
+- The first request after another part of the system had been used could come
+  back empty and fail.
+- A connection dropped by the server was kept and reused, so one bad moment
+  turned into every following action failing.
+
+**One known limitation.** When Acumatica signs you out and straight back in -
+which it does on its own when the instance runs short of licences - the very
+next save is refused. Only that one; the following attempt works. The tool now
+says plainly that nothing was saved, rather than appearing to succeed.
+
 ### Both Acumatica plugins at 0.81.0-rc28 - 9 Sep 2026
 
 **Adding a step to an existing approval map works again on older Acumatica
