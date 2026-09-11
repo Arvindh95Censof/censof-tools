@@ -80,6 +80,61 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc33 - 11 Sep 2026
+
+**Saving a change to a large table no longer reports a failure that did not
+happen.** After you change a row, the tools read the table back to check the
+change really landed - that read-back is the whole basis of the promise not to
+trust a clean *"OK"*. It was fetching only the first twenty rows. So a change to
+any row further down came back as **rejected** when it had saved perfectly. On
+the Chart of Accounts, which holds 405 rows, that meant everything past the
+twentieth.
+
+**It was the same setting rc32 caught, sitting in a second place nobody looked.**
+The last entry described finding a row-count value copied out of a browser window
+and fixing it before it could do any harm. That fix went into one of the two
+places carrying that number. The other was already live, and it wins whenever a
+row is selected - which is every change and every delete. The trap described last
+time as *caught on the way out* had in fact been sprung for a while, in the
+function next door.
+
+**A delete could be reported as successful when it may not have happened.** This
+is the worse direction, and worth saying plainly. The check for *did the delete
+work?* was: is the row still in the table? On a table too large to read in one go,
+a row beyond what could be seen looks exactly like a row that was removed. So a
+delete that did nothing could come back confirmed. It now says it could not check.
+
+**Past a thousand rows it now says so, instead of guessing.** The tools still read
+a limited number of rows at a time; what changed is what they say on reaching that
+limit. Before, you got either *your change was rejected* or *there is no such row*
+- both stated confidently, both apparently about your data, when the real cause
+was their own reading limit. They now say they could not check, say how to check,
+and decline the change rather than send one they cannot confirm afterwards. If you
+work with tables this large, narrow them with a filter first.
+
+**An error that said nothing now says what was refused.** A permissions failure
+came back as `403:` - ending there, nothing after the colon. The explanation had
+been in the response the whole time, in a place the code never read. It now names
+what was denied. This surfaced while deliberately removing a user role to test a
+claim in our own notes, and it mattered more than it looked: that same blank error
+appears when the tools lose the access they use to find their way around a site,
+and it was indistinguishable from a screen simply not having an old-style page.
+
+**The written record now matches the software.** Checking our own notes against a
+live system, four claims did not survive contact with it - including one that
+described a whole family of tools as read-only when six of them write, and one
+that blamed a behaviour on an Acumatica version when it actually depends on how
+the individual site was installed. All corrected against measurement.
+
+**The pattern, for the third time.** The last entry noted a recurring shape:
+something reports success, or reports nothing, while quietly doing nothing - and
+the note about it gets filed narrower than the problem really is. This release is
+that shape again, one level up: a fix was correct, and the search for other copies
+of the same fault was too narrow. Three separate defects here were each a second
+copy of something already found and fixed elsewhere. The lesson being written down
+is that finding a bug is not finishing it; the sweep for its siblings is part of
+the fix.
+
 ### Both Acumatica plugins at 0.81.0-rc32 - 11 Sep 2026
 
 **Reading a table now returns its rows.** On older-style Acumatica screens, asking
