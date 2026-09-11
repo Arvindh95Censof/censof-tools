@@ -80,6 +80,54 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc32 - 11 Sep 2026
+
+**Reading a table now returns its rows.** On older-style Acumatica screens, asking
+the tools to look at a table came back with the right column names and **no rows
+at all** - on every such screen, since the day that feature existed. The Chart of
+Accounts reported nothing where it holds 406 accounts.
+
+It is the same missing piece that broke the Excel import in rc31, and filing that
+as an import problem was the mistake. The tools use those reads twice: to check a
+row exists before changing it, and to confirm afterwards that a change really
+happened. Both were reading from a table that always looked empty, so neither
+check could do its job.
+
+Worth being precise about what that did and did not mean. Nothing was ever
+reported as saved when it had not been - an empty read was treated as "could not
+check", never as "confirmed". But **"could not check" was as good as it ever got**
+for this kind of change, and that is the opposite of what this product promises.
+It now confirms properly.
+
+**A trap caught on the way out.** The fix carries a setting that decides how many
+rows come back, and the value in the code had been copied from a browser window:
+sixteen. That was harmless while only the Excel import used it, because importing
+reads no rows. Switched on everywhere unchanged, it would have turned "sees
+nothing" into "sees the first sixteen" - so changing the fortieth row of a table
+would come back as *row not found*. A wrong answer is worse than no answer, and
+this one would have looked authoritative. Found by asking why the first successful
+read returned exactly sixteen rows.
+
+**Importing into the wrong table now says so.** A screen can hold five tables with
+only one import button. Asking to import into one of the others used to get past
+the check and fail later blaming something unrelated. It now refuses immediately
+and tells you which tables on that screen do take an import.
+
+**We also counted properly for once.** The note in our own records said the import
+button appeared on "3 of 8 screens sampled" - a handful of screens checked by hand,
+written down as though it were a survey. Counting every screen Acumatica ships:
+**185 tables across 125 screens**. Four screens picked from that list at random
+worked on the first attempt, having never been tried before.
+
+**Worth recording, because it is becoming a pattern.** Three times now the same
+shape has appeared: something reports success, or reports nothing, while quietly
+doing nothing at all - and the record of it gets filed narrower than the problem
+actually is. rc29 fixed saving and the note was filed as applying to one kind of
+screen. rc31 fixed the import and the note was filed as being about imports. Each
+time the real fault was wider than the place it was noticed, and each time the
+filing is what hid the rest. The fix this release is the part rc31 should have
+caught.
+
 ### Both Acumatica plugins at 0.81.0-rc31 - 10 Sep 2026
 
 **The green Excel button on a table toolbar now works.** On older-style Acumatica

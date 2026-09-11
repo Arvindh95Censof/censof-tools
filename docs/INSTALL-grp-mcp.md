@@ -165,7 +165,7 @@ Confirm:
 claude plugin list
 ```
 
-**Expect:** `grp-mcp@censof-tools` with a version like `0.81.0-rc31`.
+**Expect:** `grp-mcp@censof-tools` with a version like `0.81.0-rc32`.
 
 > **Also available:** `censof-mcp` in the same marketplace searches the GRP
 > knowledge base — closed RFS tickets, Acumatica documentation and the GRP
@@ -307,7 +307,7 @@ Then ask Claude:
 
 ```json
 {
-  "grp_mcp_version": "0.81.0rc31",
+  "grp_mcp_version": "0.81.0rc32",
   "instance": "staging",
   "tenant": "MyCompany 270326",
   "base_url": "https://acumatica.example.com/MyCompany",
