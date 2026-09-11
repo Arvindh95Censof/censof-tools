@@ -80,6 +80,44 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc34 - 11 Sep 2026
+
+**Six ways a write or a delete could tell you the wrong thing.** Every fix here came
+out of driving the tools against a live instance and reading the database afterwards,
+rather than trusting what the tool reported.
+
+**A delete your profile forbids could still happen.** The diagnostic replay accepted
+`operation="delete"` but ran under the *write* permission instead of the delete one.
+A profile set to allow writes and refuse deletes therefore had a delete path it was
+configured to forbid. It now refuses and points at the proper delete tool.
+
+**A segmented key could be reported deleted while it was still there.** The tool
+decided whether the key existed by asking three tables that, on some instances, answer
+successfully with no rows at all - so it concluded "nothing to delete", said `ok`, and
+left the key untouched. Its final check asked the same empty tables, so the wrong
+answer was confirmed twice. It now confirms on a plane that can actually see the
+record, and returns "cannot confirm" rather than "absent" when nothing can.
+
+**A committed import could report that it committed nothing.** The per-row processed
+flags lag the run's own status, so reading them once, straight after the status
+changed, caught every row still false - while the records existed in the database.
+The rows are now polled until they are all accounted for.
+
+**Import scenarios silently dropped `=` formulas.** On any screen with a lookup key
+field the screen inserts extra rows of its own, which knocked the repair step out of
+alignment; every formula was stored mangled and the tool reported success. Constants
+became bare text, functions were evaluated away, and references became null.
+
+**A delete could be confirmed against the wrong record.** Some screens jump to a
+different record after saving. The check asked "is the row I deleted missing from what
+I can see now?" - and it was missing, because it was looking at another record.
+
+**Classic screens that page through records now work at all.** Screens with no way to
+jump straight to a record by key - Segmented Keys among them - were unreachable to
+every classic-plane tool, which reported the key field name as wrong when it was
+correct. They now page to the record instead. That also makes a multi-segment
+segmented key deletable for the first time.
+
 ### Both Acumatica plugins at 0.81.0-rc33 - 11 Sep 2026
 
 **Saving a change to a large table no longer reports a failure that did not
