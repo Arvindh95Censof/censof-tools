@@ -80,6 +80,25 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc36 - 17 Sep 2026
+
+**Creating a numbering sequence no longer reports a failure that did not happen.** After a
+save, the tools check that what they wrote is what Acumatica stored. Acumatica's classic
+screens write a date with a 12-hour clock - `1/1/1900 12:00:00 AM` - and the check compared
+that as text against the `1/1/1900` that was sent. So in 0.81.0-rc35 `create_numbering_sequence`
+reported every sequence it created as having saved nothing, although the sequence was there.
+Any classic-screen write that sets a record's key and a date could report the same. Dates now
+compare correctly, and a genuinely different date is still caught.
+
+If 0.81.0-rc35 gave you that error, the sequence was created: check the Numbering Sequences
+screen (CS201010) rather than creating it again. A second create with the same ID is refused
+anyway.
+
+**Autofill says why it cannot propose a value.** When a lookup field has exactly one candidate
+but Acumatica does not return the column holding its id, autofill called it "many matches" and
+suggested narrowing a search that had found one row. It now says the id cannot be read, so the
+field has to be set by hand.
+
 ### Both Acumatica plugins at 0.81.0-rc35 - 17 Sep 2026
 
 **Approval maps built by the tools approved documents at their first step.** The
