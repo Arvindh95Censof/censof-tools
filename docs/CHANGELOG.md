@@ -80,6 +80,61 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc35 - 17 Sep 2026
+
+**Approval maps built by the tools approved documents at their first step.** The
+approval type the map builders defaulted to was *Approve Document*, not *Complete
+Step*: one approval approved the whole document, and every step after it was
+skipped. The default is now *Complete Step*, a type the screen does not have is
+refused, and the tools warn wherever a rule can still skip later steps. A "greater
+than" condition had been built as "greater than or equal to", and a range condition
+without *Is Between* kept only its lower bound. If you built a map with an earlier
+version, read it back with `list_approval_steps`: a rule before the last step that
+carries `A` skips the steps after it.
+
+**A lookup value Acumatica cannot find is refused before it blanks the field.**
+Acumatica accepts a value a lookup field does not recognise without any error, and
+saves the field blank. The tools check for this before writing, but on 2025R2 and
+2026R1 the check itself failed on common lookups - Payment Method, Post Period and
+Fiscal Year among them - and a failed check let the value through. It now works on
+those fields. A value it resolves for you also no longer comes back with an empty id
+on screens whose lookup names its columns in a different case.
+
+**A profile that refuses deletes refuses them everywhere.** Every route that can fire
+an action now respects the delete setting, not only the delete tools. Every file tool
+is held to your allowed folders, the grid's Excel upload included.
+
+**Fewer wrong answers about whether a write landed.**
+
+- `create_ledger`, `create_numbering_sequence` and `create_segmented_key` refuse an ID
+  that already exists, and check the record they created.
+- A value Acumatica stores in a different case, or as the code behind the label you
+  sent, is no longer called a rejected write.
+- A record that saved with one field changed by Acumatica - a single-currency company
+  keeping its own currency, say - is no longer reported as not saved.
+- Adding a row under a parent record no longer looks for a duplicate by part of its
+  key. A new value under one attribute was reported as already there, and not added,
+  because a different attribute had the same value.
+- When several rows match the record a write is checked against, the result says it
+  cannot tell, instead of judging whichever row came back first.
+- Checking a write no longer reads a whole table to do it. On one site that took two
+  minutes.
+- A dialog value Acumatica keeps in its own format, such as a date or a number, is no
+  longer reported as not taken.
+- A classic-screen write that set a record's key and silently changed nothing is now
+  flagged instead of passing.
+
+**Grids.** Row keys match regardless of case, as Acumatica does. Adding rows refuses a
+batch that repeats a key. A child grid read without its parent record no longer looks
+like an empty grid.
+
+**Also.** Two new read-only tools, reachable through `find_tool`: `who_can_access`
+(which roles can open a screen, and whether a given user can) and `why_not_posted`
+(which of the usual causes is holding a GL batch). Report downloads work on standard
+Acumatica sites, not only ones with a customised report launcher. And errors lead with
+what went wrong: a misspelled table name is reported as one, no longer as a possibly
+wrong tenant.
+
 ### Both Acumatica plugins at 0.81.0-rc34 - 11 Sep 2026
 
 **Six ways a write or a delete could tell you the wrong thing.** Every fix here came
