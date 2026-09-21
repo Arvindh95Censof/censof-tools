@@ -80,6 +80,43 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc37 - 21 Sep 2026
+
+**Where a field lives is now read from the screen's own layout, per record type.** Before writing
+a field that Acumatica's modern API cannot see, the tools check whether it sits on a tab, where a
+classic write reaches it, or inside a dialog, where a classic write returns a clean "ok" and saves
+nothing. That check used to look for the field's own editor on the page and read its absence as a
+dialog. Measured against the page layout of a stock 2026R1 site - 1,004 pages read from a local
+install - the guess was wrong often: about a quarter of editors carry an id naming a different
+field, and roughly one tab in seven loads only when you open it, so "absent" meant very little.
+Two screens that do have dialogs, GL201000 and UT104000, were reported as having none, and a field
+belonging to a dialog could come back as a tab field - the silent no-op the check exists to
+prevent.
+
+It now finds every dialog on the page and places each field by the record it belongs to, instead of
+hunting for its control. On the 3,701 fields checked across 28 screens it got none wrong, where the
+previous rule got 247 wrong. Where the page genuinely cannot say - a tab or a dialog that loads
+only when opened - it answers "unknown" rather than guessing.
+
+**A screen whose modern layout fails to load no longer looks safe.** When Acumatica's layout
+service errors for a screen (one answered HTTP 500), the check reported zero fields at risk, which
+reads as "nothing to worry about". It now says the list could not be built, and asks which fields
+you mean.
+
+**A settings record with no OData route can be verified after a write.** The single-record setup
+screens - payroll preferences, for one - have no table the API can read back, so a write to them
+was reported as unproven whatever you did. The read-back now goes through the classic screen, and
+either confirms the stored value or reports it rejected.
+
+**An import repoint is refused before it writes anything.** Pointing an import scenario at a new
+sheet needs the classic screen. Where a site does not serve one, the tools now refuse at the start
+instead of failing midway, and creating a data provider no longer fails on sites that answer the
+provider list differently.
+
+**Clearer messages.** An empty grid read no longer names a cause that turned out to be wrong, and
+points at reading the table directly instead. The hint offered after a failed save now says plainly
+that the replay it suggests is a real save, which commits when nothing objects.
+
 ### Both Acumatica plugins at 0.81.0-rc36 - 17 Sep 2026
 
 **Creating a numbering sequence no longer reports a failure that did not happen.** After a
