@@ -80,6 +80,36 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc38 - 21 Sep 2026
+
+**A publish that never ran no longer reports success.** Acumatica runs one publish or validation
+at a time. Send another while one is running and the site turns it away - but inside an ordinary
+reply, not an error. The tools ignored that reply, waited on the operation that was running, and
+reported its result as their own: "completed", not failed, with the other operation's log
+attached. So a publish that never happened looked done, and a validation that never ran looked
+passed. It is now reported as **refused**: nothing ran, and once the running operation finishes
+you send the same request again.
+
+**A publish is followed to the end.** Partway through a real publish the website restarts. The
+tools lost contact at that moment and stopped checking, so `publish_status` said "in progress"
+forever. That was worse than a stuck status: Acumatica finishes a publish only while something
+keeps checking on it, so the publish itself could be left unfinished. The tools now sign in again
+after the restart and keep checking for up to three hours. A publish of an unchanged project took
+30 minutes on a laptop, and one reported from the field took 52.
+
+**One request, one job.** Each publish or validation gets its own job, so a validation and a
+publish of the same projects no longer overwrite each other's status. While the tools are still
+following a publish on a site, a second request is refused straight away, naming the job that is
+running.
+
+**Verification keeps the record's key.** Passing both a verify table and a verify filter - the
+documented way to get a write checked - lost the record's key, so the undo step had nothing to act
+on. A table name that comes back as "Graph+DAC" (`BranchMaint+BranchBAccount`, say) is now read
+as the table instead of failing the check.
+
+**A full seat limit says so.** When every API login seat is in use, the publishing tools say that,
+instead of telling you to check your username and password.
+
 ### Both Acumatica plugins at 0.81.0-rc37 - 21 Sep 2026
 
 **Where a field lives is now read from the screen's own layout, per record type.** Before writing
