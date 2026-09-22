@@ -80,6 +80,20 @@ skill.
 
 ## grp-mcp
 
+### Both Acumatica plugins at 0.81.0-rc39 - 22 Sep 2026
+
+**rc38 did not fix checking a write whose table name comes back as "Graph+DAC".** The rc38 entry
+below says a name like `BranchMaint+BranchBAccount`, from the Branches screen (CS102000), "is now
+read as the table". It is not. rc38 shortened it to `BranchBAccount`, which looks like a table name
+but is not one, so the check after such a write still found no table to read, and its result named
+a table that does not exist. The write itself was never affected, only the check that follows it.
+
+**The result now says what to do instead.** rc39 no longer turns the name into a table name. The
+result says the name belongs to a type defined inside the screen's own code, which nothing
+Acumatica returns ties to a table, and tells you to pass `verify_dac` and `verify_filter` to have
+the write checked. On the Branches screen the table is `Branch`. A table you name yourself is used
+as given.
+
 ### Both Acumatica plugins at 0.81.0-rc38 - 21 Sep 2026
 
 **A publish that never ran no longer reports success.** Acumatica runs one publish or validation
