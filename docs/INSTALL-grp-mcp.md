@@ -51,9 +51,9 @@ so there is no GitHub account to set up and no access to request.
 ## Step 1 — Install the Claude Code CLI and `uv`
 
 **Install this even if you only use the Claude Code desktop app.** The `claude`
-command is the only working way to install and update the plugin
-([UPDATING.md](UPDATING.md) explains why), and *Claude Desktop* — the separate
-chat app — ships no `claude` command at all.
+commands install and update the plugin even when the app's buttons look stuck
+([UPDATING.md](UPDATING.md) has both routes), and *Claude Desktop* — the
+separate chat app — ships no `claude` command at all.
 
 Open **PowerShell** and run:
 

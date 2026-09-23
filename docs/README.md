@@ -59,10 +59,10 @@ out — but it is why you will see two names for one secret.
 
 - **Claude Code** — the desktop app, a terminal, or both. One install covers
   both; they share a single plugin store.
-- **The Claude Code CLI**, even if you only use the desktop app. `claude` is the
-  only working way to install and update plugins: the Update button in the app
-  does not work, and that is a known Claude Code bug, not a fault in these
-  plugins. See [UPDATING.md](UPDATING.md).
+- **The Claude Code CLI**, even if you only use the desktop app. The app can
+  install and update plugins too, but its **Update** button only offers a version
+  it has already fetched, and it has been seen stuck; the `claude` commands work
+  regardless. See [UPDATING.md](UPDATING.md).
 - **Git** — `winget install Git.Git` on Windows; on a Mac,
   `xcode-select --install` provides it. Adding the marketplace clones
   <https://github.com/Arvindh95Censof/censof-tools> with git, and fails without

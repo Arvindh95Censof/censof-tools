@@ -28,8 +28,9 @@ Then **fully restart Claude Code** — the desktop app, the terminal, or both if
 you use both. The update lands in one shared store; each running program still
 has to be restarted to pick it up.
 
-That is the whole procedure. The rest of this page explains why it is not a
-button, and how to confirm it worked.
+That is the whole procedure. The app can do the same from its Plugins page —
+see [Updating from the app](#updating-from-the-app) — and the rest of this page
+covers how to confirm it worked.
 
 ---
 
@@ -70,13 +71,30 @@ summary of the latest version in each plugin’s description.
 
 ---
 
-## The Update button in the app does not work
+## Updating from the app
 
-You will find an **Update** button on the plugin's page. It stays greyed out
-with the tooltip *"On latest version"* even when a newer version has been
-published.
+The same update, without a terminal:
 
-This is a known bug in Claude Code, not a problem with this plugin:
+1. Open **Settings** from your account menu, bottom-left, and choose **Plugins**
+   under **Customize**.
+2. Click **Browse**, choose the **Code** tab, then **censof-tools**. Open the
+   **⋯** menu beside it and choose **Check for updates**. Any plugin with a new
+   version gets an orange dot.
+3. Close the directory, open the plugin with the dot, and click **Update** — the
+   button names the version it will move to.
+4. If a warning says local changes will be overwritten, choose **Update anyway**.
+   The file it names, under `.in_use\`, is Claude Code's own marker for a version
+   in use, not anything of yours.
+5. Fully restart Claude Code.
+
+**If the button reads *"On latest version"* when a newer version exists**, the
+app has not fetched it yet. It compares what you have installed against the copy
+of the marketplace it last downloaded, and that copy refreshes only at step 2 or
+when you run `claude plugin marketplace update censof-tools`.
+
+If it still does not move after checking, use the two commands at the top of this
+page — they are not affected. The button has also been reported stuck in Claude
+Code itself:
 
 - [#54276](https://github.com/anthropics/claude-code/issues/54276) — Desktop
   fails to detect newer versions; the same *"On latest version"* tooltip.
@@ -88,12 +106,11 @@ This is a known bug in Claude Code, not a problem with this plugin:
 - [#48912](https://github.com/anthropics/claude-code/issues/48912) — greyed out,
   reports "already up to date" after the marketplace was updated
 
-Confirmed here while publishing a release: **Check for updates worked** — the
-orange "update available" dot appeared on the plugin card — but the Update
-button stayed disabled. Detection succeeds; only applying the update is broken.
-
-This is why the CLI is a prerequisite rather than a convenience. If you skipped
-it:
+This page recorded the same on 2 Sep 2026: Check for updates found the new
+version, but the button stayed disabled. The next day the route above worked end
+to end, 1.1.4 to 1.1.5, and on 21 Sep a button stuck on *"On latest version"*
+came from a marketplace copy four days out of date. Keep the CLI installed for
+the day it sticks:
 
 ```powershell
 winget install Anthropic.ClaudeCode

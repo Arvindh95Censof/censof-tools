@@ -98,7 +98,7 @@ one — they start with `grpkb_`.
 
 ---
 
-## Updates need the CLI
+## Updates
 
 ```powershell
 claude plugin marketplace update censof-tools
@@ -108,10 +108,11 @@ claude plugin marketplace update censof-tools
 claude plugin update grp-mcp@censof-tools
 ```
 
-Both lines, in that order, then restart. The **Update** button in the app stays
-greyed out with "On latest version" even when a new version exists — a known
-Claude Code bug, not a fault here. [docs/UPDATING.md](docs/UPDATING.md) has the
-issue links.
+Both lines, in that order, then restart. The app's **Update** button works too,
+once you have run **Check for updates** on the marketplace: until then it reads
+"On latest version", because it compares against the copy of the marketplace it
+last fetched. If it still will not move, the two lines above always work.
+[docs/UPDATING.md](docs/UPDATING.md) walks through both.
 
 > **Coming from `grp-mcp` 0.81.0-rc14 or earlier? Install `uv` first.**
 >

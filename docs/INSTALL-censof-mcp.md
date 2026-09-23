@@ -22,8 +22,8 @@ that can change your ERP.
 - **Windows, macOS or Linux.** Nothing platform-specific here.
 - **Claude Code** — the desktop app, a terminal, or both. One install covers
   both; they share a single plugin store.
-- **The Claude Code CLI**, even if you only use the desktop app — `claude` is the
-  only working way to install and update plugins.
+- **The Claude Code CLI**, even if you only use the desktop app — the `claude`
+  commands install and update plugins even when the app's buttons look stuck.
 - **Git**, which Step 1 installs. The `censof-tools` repository is public, so
   you need no GitHub account.
 - **Your personal knowledge-base token**, which starts with `grpkb_`. Ask
@@ -233,8 +233,9 @@ claude plugin marketplace update censof-tools
 claude plugin update censof-mcp@censof-tools
 ```
 
-Then restart. **The Update button in the app does not work** — that is a known
-Claude Code bug, not a problem with this plugin. See [UPDATING.md](UPDATING.md).
+Then restart. The app's **Update** button works too, once you have run
+**Check for updates** on the marketplace — [UPDATING.md](UPDATING.md) walks
+through both.
 
 ---
 

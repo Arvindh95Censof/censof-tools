@@ -104,26 +104,26 @@ reachability.
 If you edit `connections.json` while Claude is running, ask for `reload_config`;
 the server only reads that file at startup.
 
-## Updates need the Claude Code CLI
+## Updates
 
-The Update button in the desktop app does not work — it stays greyed out even
-when a new version has been published ([a known bug][bug]). Install the CLI
-once:
+The **Update** button on the plugin's page works once the app has checked the
+marketplace for updates; until then it reads "On latest version". It has also
+been seen stuck ([a known bug][bug]), so keep the Claude Code CLI installed:
 
 ```
 winget install Anthropic.ClaudeCode
 ```
 
-Then, to update, run both lines in this order:
+Then, to update from a terminal, run both lines in this order:
 
 ```
 claude plugin marketplace update censof-tools
 claude plugin update grp-mcp@censof-tools
 ```
 
-The first line is not optional and is invisible from the plugin's page: until
-the marketplace is refreshed, that page reports your installed version as the
-latest and is telling the truth about what it has.
+The first line is not optional: until the marketplace is refreshed — by this
+line, or by **Check for updates** in the app — the plugin's page reports your
+installed version as the latest, and is telling the truth about what it has.
 
 **Updating from 0.81.0-rc14 or earlier?** Install `uv` before you restart — see
 the prerequisite at the top. Up to rc14 this plugin carried its own program and
