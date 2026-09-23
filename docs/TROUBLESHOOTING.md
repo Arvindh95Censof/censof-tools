@@ -31,20 +31,30 @@ no `claude` command. The Claude Code desktop app and the Claude Code CLI are
 what this package targets, and they share one plugin store — install once,
 and both see it.
 
-### `repository not found` when adding the marketplace
+### `Command 'git' not found` when adding the marketplace
 
-Almost always permission, not a typo. GitHub returns 404 rather than "forbidden"
-for private repositories you cannot see.
+Claude Code clones the marketplace with git, and git is missing, or it was
+installed after Claude Code started: a program that is already running does not
+pick up the new PATH.
 
-Open <https://github.com/Arvindh95Censof/censof-tools> in a browser. If you
-cannot see it there, request access — nothing will work until you can.
+```powershell
+winget install Git.Git
+```
 
-### `Authentication failed` / `could not read Username`
+Then fully restart Claude Code (for the CLI, open a new PowerShell window) and
+add the marketplace again. On macOS, `xcode-select --install` provides git.
 
-Git cannot sign in as you from the command line. Install
-[Git for Windows](https://git-scm.com/download/win), which includes Git
-Credential Manager, then run the marketplace command again — it will prompt you
-to sign in.
+After this failure `claude plugin install` reports the plugin as not found and
+suggests `claude plugin marketplace update censof-tools`. That fails too, with
+`Marketplace 'censof-tools' not found`, because nothing was added. Add the
+marketplace again instead.
+
+### `repository not found`, `could not read Username`, or a GitHub sign-in window
+
+A typo in the URL. The repository is public, so the right URL never asks you to
+sign in and never answers "not found": GitHub asks for a login only on a
+repository it will not show you. Copy the URL from
+<https://github.com/Arvindh95Censof/censof-tools> rather than typing it.
 
 ### `Nested zip files are not allowed`
 

@@ -16,7 +16,7 @@ Every step tells you **what to expect**, so you can tell success from
 
 **Contents**
 
-- [Step 0 — Check you can get the software](#step-0--check-you-can-get-the-software)
+- [Step 0 — Install Git](#step-0--install-git)
 - [Step 1 — Install the Claude Code CLI and `uv`](#step-1--install-the-claude-code-cli-and-uv)
 - [Step 2 — Add the marketplace](#step-2--add-the-marketplace)
 - [Step 3 — Install the plugin](#step-3--install-the-plugin)
@@ -30,22 +30,21 @@ Every step tells you **what to expect**, so you can tell success from
 
 ---
 
-## Step 0 — Check you can get the software
+## Step 0 — Install Git
 
-**The `censof-tools` repository is private.** Open this in a browser:
+Step 2 clones the marketplace with git, and fails with `Command 'git' not found`
+without it:
 
-<https://github.com/Arvindh95Censof/censof-tools>
+```powershell
+winget install Git.Git
+```
 
-- **You see the repository** → good, continue.
-- **You see "404" or a sign-in wall** → your GitHub account does not have
-  access. Request it before going further. Steps 2 and 3 will fail with a
-  confusing git error rather than a clear "you lack permission."
+Windows may ask for permission. If Claude Code is running, quit it completely and
+reopen it afterwards: a program that is already running does not pick up the new
+PATH. On macOS, `xcode-select --install` provides git.
 
-You also need git to be able to authenticate as you from the command line. If
-you have ever cloned a private company repo on this machine, that is already
-set up. If not, install [Git for Windows](https://git-scm.com/download/win),
-which includes Git Credential Manager and will prompt you to sign in the first
-time it needs to.
+The repository is public — <https://github.com/Arvindh95Censof/censof-tools> —
+so there is no GitHub account to set up and no access to request.
 
 ---
 
@@ -122,15 +121,12 @@ claude plugin marketplace add https://github.com/Arvindh95Censof/censof-tools.gi
 
 **Expect:** `Successfully added marketplace: censof-tools`
 
-Use the full `.git` URL exactly as written. The shorter `owner/repo` form works
-for public repositories but does not reliably authenticate to a private one.
-
 **If it fails:**
 
 | Message | Cause |
 |---|---|
-| `Authentication failed` / `could not read Username` | Git cannot sign in as you. See Step 0. |
-| `repository not found` | Almost always permission, not a typo — GitHub returns 404 for private repos you cannot see. Recheck Step 0. |
+| `Command 'git' not found` | Git is missing, or Claude Code was running when it was installed. See Step 0. |
+| `repository not found`, `could not read Username`, or a GitHub sign-in window | A typo in the URL. The repository is public, so the right URL never asks you to sign in. |
 | `not recognized as ... cmdlet` | The CLI is not installed or PowerShell was not reopened. Back to Step 1. |
 
 Confirm it registered:

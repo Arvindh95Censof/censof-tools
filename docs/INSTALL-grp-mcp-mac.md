@@ -25,9 +25,11 @@ you would get every tool twice, with no way to tell which answered.
 ## What you need
 
 - **Claude Code**, and the `claude` CLI — see
-  [INSTALL-censof-mcp.md](INSTALL-censof-mcp.md) step 1 if you do not have it.
+  [INSTALL-censof-mcp.md](INSTALL-censof-mcp.md) step 2 if you do not have it.
   On macOS the **Add marketplace** button in the app registers the marketplace
   and then stops without installing; the CLI is the working route.
+- **git** — `xcode-select --install` provides it. Adding the marketplace clones
+  the repository with git, and fails with `Command 'git' not found` without it.
 - **`uv`** — it fetches and runs the server in its own isolated environment.
   Windows needs it too now (`winget install astral-sh.uv`); until rc15 it did
   not, because that plugin carried a binary.
@@ -54,9 +56,8 @@ you would get every tool twice, with no way to tell which answered.
 claude plugin marketplace add https://github.com/Arvindh95Censof/censof-tools.git
 ```
 
-Use the full `.git` URL. A `repository not found` here almost always means
-permission, not a typo — GitHub returns 404 for private repositories you cannot
-see.
+A `repository not found` here means a typo in the URL — the repository is
+public. `Command 'git' not found` means git is missing; see What you need.
 
 ## 2. Install the plugin
 

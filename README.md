@@ -48,6 +48,10 @@ winget install Anthropic.ClaudeCode
 ```
 
 ```powershell
+winget install Git.Git
+```
+
+```powershell
 claude plugin marketplace add https://github.com/Arvindh95Censof/censof-tools.git
 ```
 
@@ -61,9 +65,11 @@ claude plugin install censof-mcp@censof-tools
 winget install astral-sh.uv
 ```
 
-Use the full `.git` URL — the shorter `owner/repo` form does not reliably
-authenticate to a private repository. Swap in `grp-mcp@censof-tools` for the
-Acumatica plugin; `grp-mcp` needs your Acumatica credentials as well, which
+Git comes first because `marketplace add` clones this repository with it; without
+it the add fails with `Command 'git' not found`. Open a new PowerShell window
+after installing it, and restart Claude Code if it was running, or neither will
+find it. Swap in `grp-mcp@censof-tools` for the Acumatica plugin; `grp-mcp` needs
+your Acumatica credentials as well, which
 [docs/INSTALL-grp-mcp.md](docs/INSTALL-grp-mcp.md) walks through.
 
 **On a Mac or Linux?** `grp-mcp` works there too now — follow
@@ -145,7 +151,7 @@ four most common:
 
 | What you see | What it means |
 | --- | --- |
-| `repository not found` | Permission, not a typo. GitHub returns 404 for private repos you cannot see — check you can open this page while signed in |
+| `Command 'git' not found` | Git is not installed, or Claude Code was already running when it was. `winget install Git.Git`, restart Claude Code, then add the marketplace again |
 | Tools missing, or auth errors | Your token is not reaching the server. Run `Set-KB-Token.cmd`, then **fully restart** Claude Code — a running program keeps the environment it started with |
 | `not permitted to …` | Not an install problem. Your token works; it lacks that access tier. Ask OPEX to add it |
 | `/` menu shows nothing at all | You are on the home screen. Skills load once a session starts — send a message first, then look |

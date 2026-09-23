@@ -63,9 +63,11 @@ out — but it is why you will see two names for one secret.
   only working way to install and update plugins: the Update button in the app
   does not work, and that is a known Claude Code bug, not a fault in these
   plugins. See [UPDATING.md](UPDATING.md).
-- **Access to the private `censof-tools` GitHub repository.** If you cannot open
-  <https://github.com/Arvindh95Censof/censof-tools> in a browser, stop and
-  request access — nothing here will work without it.
+- **Git** — `winget install Git.Git` on Windows; on a Mac,
+  `xcode-select --install` provides it. Adding the marketplace clones
+  <https://github.com/Arvindh95Censof/censof-tools> with git, and fails without
+  it. The repository is public: there is no GitHub account to set up and no
+  access to request.
 - **[`uv`](https://docs.astral.sh/uv/)** for `grp-mcp` — `winget install
   astral-sh.uv` on Windows, `brew install uv` on a Mac. It fetches and runs the
   Acumatica server in its own isolated environment; you do not need Python.

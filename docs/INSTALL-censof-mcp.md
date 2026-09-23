@@ -7,7 +7,7 @@ attachments, finds precedent in the closed-ticket history, cross-checks the
 documentation, and proposes a fix labelled *proven*, *proposed*, or *a
 workaround over a root cause that was never fixed*.
 
-**This is the light one.** Four steps, about five minutes. It reads a hosted
+**This is the light one.** Five steps, about ten minutes. It reads a hosted
 service over HTTP — no download, no Python, no Acumatica credentials, nothing
 that can change your ERP.
 
@@ -24,29 +24,28 @@ that can change your ERP.
   both; they share a single plugin store.
 - **The Claude Code CLI**, even if you only use the desktop app — `claude` is the
   only working way to install and update plugins.
-- **Access to the private `censof-tools` GitHub repository.**
+- **Git**, which Step 1 installs. The `censof-tools` repository is public, so
+  you need no GitHub account.
 - **Your personal knowledge-base token**, which starts with `grpkb_`. Ask
   whoever sent you this package.
 
 ---
 
-## Step 1 — Check you can get the software
+## Step 1 — Install Git
 
-**The `censof-tools` repository is private.** Open this in a browser:
+Step 3 clones the marketplace with git, and fails with `Command 'git' not found`
+without it:
 
-<https://github.com/Arvindh95Censof/censof-tools>
+```powershell
+winget install Git.Git
+```
 
-- **You see the repository** → continue.
-- **You see a 404 or a sign-in wall** → your GitHub account lacks access.
-  Request it before going further. Step 3 will otherwise fail with
-  `repository not found`, which reads like a typo and sends you hunting the
-  wrong problem — GitHub returns 404 rather than "forbidden" for private
-  repositories you cannot see.
+Windows may ask for permission. If Claude Code is running, quit it completely and
+reopen it afterwards: a program that is already running does not pick up the new
+PATH. On macOS, `xcode-select --install` provides git.
 
-You also need git able to authenticate as you from the command line. If you have
-ever cloned a private company repo on this machine, that is already set up. If
-not, install [Git for Windows](https://git-scm.com/download/win), which includes
-Git Credential Manager and will prompt you the first time it needs to.
+The repository is public — <https://github.com/Arvindh95Censof/censof-tools> —
+so there is no GitHub account to set up and no access to request.
 
 ---
 
@@ -80,8 +79,7 @@ claude plugin marketplace add https://github.com/Arvindh95Censof/censof-tools.gi
 
 **Expect:** `Successfully added marketplace: censof-tools`
 
-Use the full `.git` URL exactly as written. The shorter `owner/repo` form works
-for public repositories but does not reliably authenticate to a private one.
+If this fails with `Command 'git' not found`, go back to Step 1.
 
 ```powershell
 claude plugin install censof-mcp@censof-tools
@@ -208,7 +206,8 @@ Or try the skill it bundles, on any real ticket number:
 |---|---|
 | No knowledge-base tools appear | Are you in Claude Code, or Claude Desktop? The chat app does not use plugins. Otherwise `claude plugin list` and restart. |
 | Every search fails with an auth error | The token is not reaching the server. Windows: run `tools\Set-KB-Token.cmd`. macOS/Linux: see the section above — and if it works in a terminal but not the app, that is the Finder-does-not-read-`.zshrc` trap. Then **restart**. |
-| `repository not found` | Permission, not a typo. See Step 1. |
+| `Command 'git' not found` | Git is missing, or Claude Code was running when it was installed. See Step 1. |
+| `repository not found`, or a GitHub sign-in window | A typo in the URL. The repository is public, so the right URL never asks you to sign in. |
 | `claude` not recognized | CLI not installed, or PowerShell not reopened. See Step 2. |
 
 Confirm the token is genuinely stored:
