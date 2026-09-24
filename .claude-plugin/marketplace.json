@@ -4,7 +4,7 @@
   "description": "Censof internal Claude plugins — the GRP knowledge base connector and the tools built on it.",
   "owner": {
     "name": "Censof OPEX",
-    "url": "https://github.com/Arvindh95Censof"
+    "url": "https://github.com/Censof-AI"
   },
   "plugins": [
     {

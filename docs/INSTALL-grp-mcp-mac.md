@@ -53,7 +53,7 @@ you would get every tool twice, with no way to tell which answered.
 ## 1. Add the marketplace
 
 ```bash
-claude plugin marketplace add https://github.com/Arvindh95Censof/censof-tools.git
+claude plugin marketplace add https://github.com/Censof-AI/censof-tools.git
 ```
 
 A `repository not found` here means a typo in the URL — the repository is

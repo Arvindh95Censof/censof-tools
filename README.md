@@ -52,7 +52,7 @@ winget install Git.Git
 ```
 
 ```powershell
-claude plugin marketplace add https://github.com/Arvindh95Censof/censof-tools.git
+claude plugin marketplace add https://github.com/Censof-AI/censof-tools.git
 ```
 
 ```powershell

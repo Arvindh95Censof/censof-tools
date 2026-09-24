@@ -65,7 +65,7 @@ out — but it is why you will see two names for one secret.
   regardless. See [UPDATING.md](UPDATING.md).
 - **Git** — `winget install Git.Git` on Windows; on a Mac,
   `xcode-select --install` provides it. Adding the marketplace clones
-  <https://github.com/Arvindh95Censof/censof-tools> with git, and fails without
+  <https://github.com/Censof-AI/censof-tools> with git, and fails without
   it. The repository is public: there is no GitHub account to set up and no
   access to request.
 - **[`uv`](https://docs.astral.sh/uv/)** for `grp-mcp` — `winget install

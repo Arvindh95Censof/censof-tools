@@ -43,7 +43,7 @@ Windows may ask for permission. If Claude Code is running, quit it completely an
 reopen it afterwards: a program that is already running does not pick up the new
 PATH. On macOS, `xcode-select --install` provides git.
 
-The repository is public — <https://github.com/Arvindh95Censof/censof-tools> —
+The repository is public — <https://github.com/Censof-AI/censof-tools> —
 so there is no GitHub account to set up and no access to request.
 
 ---
@@ -116,7 +116,7 @@ You do **not** need Python. `uv` brings its own.
 A "marketplace" is just the repository the plugin is published from.
 
 ```powershell
-claude plugin marketplace add https://github.com/Arvindh95Censof/censof-tools.git
+claude plugin marketplace add https://github.com/Censof-AI/censof-tools.git
 ```
 
 **Expect:** `Successfully added marketplace: censof-tools`

@@ -54,7 +54,7 @@ marketplace again instead.
 A typo in the URL. The repository is public, so the right URL never asks you to
 sign in and never answers "not found": GitHub asks for a login only on a
 repository it will not show you. Copy the URL from
-<https://github.com/Arvindh95Censof/censof-tools> rather than typing it.
+<https://github.com/Censof-AI/censof-tools> rather than typing it.
 
 ### `Nested zip files are not allowed`
 
